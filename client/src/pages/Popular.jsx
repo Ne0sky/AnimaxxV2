@@ -129,7 +129,7 @@ const Popular = () => {
           <div className='flex flex-wrap gap-8'>
             {popularAnimes &&
               popularAnimes.map((anime) => (
-                <div className='card w-80 md:w-52 h-[400px]  ' key={anime.id}>
+                <Link to={`/anime/${anime.id}`} className='card w-80 md:w-52 h-[400px]  ' key={anime.id}>
                     <div className='relative h-[300px] w-full'>
                         <img className='w-full max-h-full object-cover overflow-hidden rounded-lg' src={anime.coverImage.extraLarge} alt={anime.title.romaji} />
                         <div className='absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#1f172b]'></div>
@@ -144,7 +144,7 @@ const Popular = () => {
                     </p>
                   </div>
                 </div>
-                </div>
+                </Link>
               ))}
               {
                 isFetchingNextPage && (

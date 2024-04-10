@@ -17,6 +17,14 @@ const useGetAnimeById = (animeId) => {
                         english
                         native
                     }
+                    studios(isMain: true) {
+                        edges {
+                            node {
+                                id
+                                name
+                            }
+                        }
+                    }
                     characters {
                         edges {
                             node {
@@ -26,6 +34,26 @@ const useGetAnimeById = (animeId) => {
                                 }
                                 image {
                                     large
+                                }
+                                description
+                            }
+                        }
+
+                    }
+                    relations {
+                        edges {
+                            relationType
+                            node {
+                                ... on Media {
+                                    id
+                                    title {
+                                        romaji
+                                        english
+                                        native
+                                    }
+                                    coverImage {
+                                        large
+                                    }
                                 }
                             }
                         }
@@ -79,10 +107,6 @@ const useGetAnimeById = (animeId) => {
                     }
                     format
                     favourites
-                    rankings {
-                        rank
-                        allTime
-                    }
                     externalLinks {
                         url
                         site
@@ -122,7 +146,7 @@ const useGetAnimeById = (animeId) => {
         } catch (error) {
             console.error('Error fetching anime data:', error.message);
             setError(error.message);
-            return null;
+            
         }
     };
 
