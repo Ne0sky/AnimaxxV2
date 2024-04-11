@@ -29,8 +29,8 @@ body{
     font-size: 14px;
     background: #f70a0a00;
     color: aliceblue;
-    border-radius: 0.25rem;
-  
+    border-radius: 0.5rem;
+    padding: 1rem;
     /* Center slide text vertically */
     display: flex;
     flex-direction: column;
@@ -40,9 +40,9 @@ body{
   
   .swiper-slide  img {
     display: block;
-    width: 11rem;
-    height: 11rem;
-    border-radius: 0.25rem;
+    width: 9rem;
+    height: 8rem;
+    border-radius: 0.5rem;
     object-fit: cover;
     box-shadow: rgba(0, 0, 0, 0.605) 0px 25px 50px -12px;
   }
