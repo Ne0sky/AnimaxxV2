@@ -60,10 +60,10 @@ const Popular = () => {
           <span className='text-rose-500 mx-2'>Top 10</span>Trending Animes
         </h1>
         {
-            isLoading  &&
+            !animeData   &&
 
               (
-                <div className='flex gap-12  '>
+                <div className='flex gap-12 flex-col lg:flex-row '>
                     
                     <div>
                     <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' className='card w-[90%] md:w-52 h-[300px]' />
@@ -125,6 +125,26 @@ const Popular = () => {
           <h1 className='text-2xl font-semibold my-8'>
             Popular Animes of <span className='text-rose-500 mx-2'>all time</span>
           </h1>
+
+          {
+            !popularAnimes && (
+              <div className='flex gap-8'>
+                <div>
+                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' className='card w-[90%] md:w-52 h-[300px]' />
+                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' count={2} className='card w-[90%] md:w-52 ' />
+                    </div>
+                    <div>
+                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' className='card w-[90%] md:w-52 h-[300px]' />
+                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' count={2} className='card w-[90%] md:w-52 ' />
+                    </div>
+                    <div>
+                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' className='card w-[90%] md:w-52 h-[300px]' />
+                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' count={2} className='card w-[90%] md:w-52 ' />
+                    </div>
+                    
+                </div>
+            )
+          }
           
           <div className='flex flex-wrap gap-8'>
             {popularAnimes &&

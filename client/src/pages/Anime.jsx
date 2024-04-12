@@ -12,6 +12,7 @@ import { TbCirclesRelation } from "react-icons/tb";
 import { RiAccountPinCircleFill } from "react-icons/ri";
 import { AiFillLike } from 'react-icons/ai';
 import { LuBadgePercent } from 'react-icons/lu';
+import useAddToWatchList from '../hooks/useAddtoWatchList';
 
 
 // Import Swiper styles
@@ -23,7 +24,9 @@ import 'swiper/css/navigation';
 const Anime = () => {
   const { id } = useParams();
   const { animeData, isLoading, isError, error } = useGetAnimeById(id);
+  const { addToWatchList, isLoading: isAdding, error: addError } = useAddToWatchList();
   const [playlistId, setPlaylistId] = useState(null);
+  const [anime, setAnime] = useState(null);
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div className='flex w-screen h-80 text-white  justify-center items-center text-xl'>Error: {error}</div>;
@@ -51,7 +54,15 @@ const Anime = () => {
     { id: 2, name: 'Action' },
     { id: 3, name: 'Romance' },
     { id: 4, name: 'Thriller' },
-    { id: 5, name: 'Horror' }
+    { id: 5, name: 'Horror' },
+    {
+      id: '661773ae72b176aeb96f17a0',
+      name: 'test'
+    },
+    {
+      id:'6617743d72b176aeb96f17a9',
+      name:'test2'
+    }
   ];
 
 
@@ -63,7 +74,33 @@ const Anime = () => {
     const selectedPlaylistId = e.target.value;
     if (!selectedPlaylistId) return;
     setPlaylistId(selectedPlaylistId);
-    console.log('Added to playlist', selectedPlaylistId);
+    const anime = {
+      anilistId: animeData.id,
+      title: animeData.title.english,
+      type: animeData.type,
+      genres: animeData.genres,
+      episodes: animeData.episodes,
+      meanScore: animeData.meanScore,
+      averageScore: animeData.averageScore,
+      coverImage: animeData.coverImage.large,
+      format: animeData.format,
+      description: animeData.description,
+      status: animeData.status,
+      UserActions: {
+        currentlyWatching: true,
+        completedStatus: 0,
+        currentEpisode: 0,
+        planToWatch: false,
+        dropped: false,
+      },
+      season: animeData.season,
+      seasonYear: animeData.seasonYear,
+      startDate: animeData.startDate,
+      endDate: animeData.endDate,
+      popularity: animeData.popularity,
+    }
+    setAnime(anime);
+    addToWatchList({ id: selectedPlaylistId, anime });
 
   }
 
@@ -73,14 +110,15 @@ const Anime = () => {
         <div className='relative w-full h-full'>
           <img
             src={
-              animeData
+              animeData.bannerImage
                 ? animeData.bannerImage
                 : 'https://cdn.pixabay.com/photo/2022/12/01/04/43/girl-7628308_1280.jpg'
             }
-            className='w-full opacity-80 overflow-hidden h-full object-cover object-top'
+            className='w-full opacity-60 overflow-hidden h-full object-cover object-top'
             alt={animeData.title.romaji}
           />
           <div className='absolute top-0 left-0 w-full h-full opacity-100 bg-gradient-to-t from-[#0f0b15] to-transparent'></div>
+          
           <div className='absolute top-[10%] lg:top-[25%] p-4  md:p-8 h-full text-white z-10 flex flex-col lg:flex-row gap-8'>
             <img
               src={animeData.coverImage?.extraLarge} // Added optional chaining
@@ -97,19 +135,20 @@ const Anime = () => {
               <p>{animeData.season}</p>
               <div className='flex flex-col md:flex-row gap-4 py-4'>
                 
-
-                <Link
-                  to={`https://www.${animeData.trailer.site? animeData.trailer.site: ''}.com/watch?v=${animeData.trailer.id? animeData.trailer.id:''}`} // Ensure 'site' property exists in animeData
-                  className='bg-rose-600 text-white px-4 py-2 rounded-full bg-opacity-55 border border-rose-500 flex items-center gap-2 w-48'
-                >
-                
-                  <FaPlay />
-                  Watch Trailer
-                </Link>
+                {animeData.trailer && animeData.trailer.site && animeData.trailer.id && (
+                  <Link
+                    to={`https://www.${animeData.trailer.site}.com/watch?v=${animeData.trailer.id}`}
+                    className='bg-rose-800 text-white px-4 py-2 rounded-full bg-opacity-80 border border-rose-500 flex items-center gap-2 w-48'
+                  >
+                    <FaPlay />
+                    Watch Trailer
+                  </Link>
+                )
+                }
                 <div className='relative'>
                   <select
                     onChange={handleAddtoPlaylist}
-                    className='bg-rose-600 text-white px-4 py-2 rounded-full bg-opacity-55 border border-rose-500 outline-none w-48'
+                    className='bg-emerald-800 text-white px-4 py-2 rounded-full bg-opacity-80 border border-emerald-500 outline-none w-48'
                   >
                     <option value=''>Add to Playlist</option>
                     {playlistIds.map((playlist) => (
@@ -240,7 +279,7 @@ const Anime = () => {
           }
           </div>
         <h1 className='text-2xl text-white py-8 font-semibold flex items-center gap-2'>
-            Popular Characters from <span className='text-rose-500'>{animeData.title.english}</span> <RiAccountPinCircleFill/>
+            Popular Characters  <RiAccountPinCircleFill/>
         </h1>
           
           

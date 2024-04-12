@@ -70,13 +70,13 @@ const PlaylistList = () => {
   }
 
   return (
-    <div>
+    <div className='text-white'>
       <h1 className='text-3xl text-red-600'>Playlist</h1>
       <p className='text-lg text-gray-800'>Here are the items in your playlist. Click on an item to remove it.</p>
       <div>
         Create new playlist
         <form>
-          <input type="text" onChange={(e)=> setTitle(e.target.value)} placeholder="Playlist name" />
+          <input type="text" className='bg-zinc-950 p-4' onChange={(e)=> setTitle(e.target.value)} placeholder="Playlist name" />
           <button onClick={handleCreatePlaylist} type="submit">Create</button>
         </form>
       </div>

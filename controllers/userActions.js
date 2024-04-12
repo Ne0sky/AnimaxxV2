@@ -7,64 +7,53 @@ export const addToPlaylist = async (req, res) => {
     const { id, anime } = req.body;
     // Get the playlist
     const playlist = await playlistdb.findOne({ _id: id });
-    // Get the animes array
-    const animeIds = playlist.animeIds;
+    console.log(playlist);
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist not found" });
+    }
 
     // Check if the anime already exists in the playlist
-    const existingAnime = playlist.animeIds.find(
-      (animeId) => animeId === anime.publicId
-    );
-
-    if (existingAnime) {
+    if (playlist.animeIds.includes(anime.anilistId)) {
       return res
         .status(400)
         .json({ message: "Anime already exists in the playlist" });
     }
 
     // Add the anime to the playlist
-    animeIds.push(anime.publicId);
+    playlist.animeIds.push(anime.anilistId);
 
     // Add the anime to animedb
-    const animeinDocument = await Animedb.findOne({ publicId: anime.publicId });
+    const animeinDocument = await Animedb.findOne({
+      anilistId: anime.anilistId,
+    });
 
     if (!animeinDocument) {
       const newAnime = new Animedb({
-        publicId: anime.publicId,
+        anilistId: anime.anilistId,
         title: anime.title,
         type: anime.type,
         genres: anime.genres,
         episodes: anime.episodes,
-        officialRating: anime.officialRating,
-        img: anime.img,
-        synopsis: anime.synopsis,
-        trailer: anime.trailer,
+        coverImage: anime.coverImage,
+        format: anime.format,
+        description: anime.description,
         status: anime.status,
-        OfficialScore: anime.OfficialScore,
-        SharingUrl: anime.SharingUrl,
-        AnilistUrl: anime.AnilistUrl,
         UserActions: anime.UserActions,
-        meanScore: anime.meanScore,
-        averageScore: anime.averageScore,
         season: anime.season,
         seasonYear: anime.seasonYear,
         startDate: anime.startDate,
         endDate: anime.endDate,
-        playlists: [playlist._id],
+        playlist: [playlist._id],
       });
       await newAnime.save();
     } else {
-      animeinDocument.playlists.push(playlist._id);
+      animeinDocument.playlist.push(playlist._id);
       await animeinDocument.save();
     }
 
     // Save the updated playlist object
     await playlist.save();
-    res
-      .status(200)
-      .json({
-        message: "Anime added to playlist successfully",
-        playlist: playlist.animes,
-      });
+    res.status(200).json({ message: "Anime added to playlist successfully" });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal server error" });
@@ -217,9 +206,11 @@ export const unlikePlaylist = async (req, res) => {
     }
     playlist.likedBy = playlist.likedBy.filter((id) => id !== req.user.id);
     await playlist.save();
-    res.status(200).json({ message: "Playlist unliked successfully", playlist });
+    res
+      .status(200)
+      .json({ message: "Playlist unliked successfully", playlist });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
-}
+};
