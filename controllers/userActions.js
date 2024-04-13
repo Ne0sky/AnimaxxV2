@@ -1,11 +1,15 @@
 import userdb from "../models/UserSchema.js";
 import playlistdb from "../models/PlaylistSchema.js";
 import Animedb from "../models/AnimeSchema.js";
+import cloudinary from "../config/cloudinary.js";
+import fileUpload from "express-fileupload";
 
 export const addToPlaylist = async (req, res) => {
   try {
     const { id, anime } = req.body;
     // Get the playlist
+
+    console.log('req:', req.body)
     const playlist = await playlistdb.findOne({ _id: id });
     console.log(playlist);
     if (!playlist) {
@@ -101,50 +105,63 @@ export const getPlaylists = async (req, res) => {
   try {
     const { id } = req.user;
     const playlists = await playlistdb.find({ userId: id });
-    console.log(playlists);
     if (!playlists) {
       return res.status(404).json({ message: "Playlist not found" });
     }
-    res
-      .status(200)
-      .json({ message: "Playlists found successfully", playlists });
+    else return res.status(200).json({ message: "Playlists found successfully", playlists });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 export const createPlaylist = async (req, res) => {
   try {
     const { title } = req.body;
-    // Find the user by ID
     const user = await userdb.findById(req.user.id);
-    // Check if the user exists
+    
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    let imageUrl = ""; // Initialize imageUrl
+
+    if (req.file) {
+      console.log(req.file);
+      // If a file is uploaded, upload it to Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path);
+
+      // Get the secure URL of the uploaded image from Cloudinary
+      imageUrl = result.secure_url;
+    }
+
     // Create a new playlist object
     const newPlaylist = new playlistdb({
       title: `${title}`,
-      image: "",
+      image: imageUrl, // Set the image field to the Cloudinary URL
       url: "",
       userId: user._id,
       publicPlaylist: false,
       animeIds: [],
     });
-    // Add the new playlist to the user's playlist array
+
+    // Save the new playlist to the database
     await newPlaylist.save();
-    res
-      .status(200)
-      .json({
-        message: "Playlist created successfully",
-        playlist: user.playlist,
-      });
+
+    // Update user's playlist array if needed
+    user.playlist.push(newPlaylist._id);
+    await user.save();
+
+    res.status(200).json({
+      message: "Playlist created successfully",
+      playlist: user.playlist,
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 export const getAnimes = async (req, res) => {
   try {

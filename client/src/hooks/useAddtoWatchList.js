@@ -26,7 +26,7 @@ const useAddToWatchList = () => {
 
             setSuccess(true);
         } catch (error) {
-            console.error(error.response.data.message);
+            console.error(error.message);
             setError(error.message);
         } finally {
             setIsLoading(false);

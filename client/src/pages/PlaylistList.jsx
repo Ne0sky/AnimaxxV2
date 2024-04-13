@@ -5,30 +5,13 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Cookies from 'universal-cookie'
 import { Link } from 'react-router-dom'
+import useGetPlaylists from '../hooks/useGetPlaylists'
 const PlaylistList = () => {
-  const [playlists, setPlaylists] = useState([])
   const [title, setTitle] = useState('')
+  const [file, setFile] = useState(null)
+  const { playlists, playlistError, getPlaylists , playlistIsLoading } = useGetPlaylists()
 
-  const getPlaylist = async () => {
-    try {
-      const cookies = new Cookies()
-      const token = cookies.get('token')
-      const response = await axios.get('http://localhost:3000/user/playlist', {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `${token}`
-        }
-      })
-      console.log(response.data)
-      setPlaylists(response.data.playlists)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  useEffect(() => {
-    getPlaylist()
-  }, [])
+  
 
   const removeFromPlaylist = async (item) => {
     try {
@@ -41,7 +24,7 @@ const PlaylistList = () => {
         }
       })
       console.log(response.data.message)
-      getPlaylist()
+      getPlaylists()
     } catch (error) {
       console.error(error)
     }
@@ -51,19 +34,21 @@ const PlaylistList = () => {
     e.preventDefault()
     try {
       console.log(title)
-      const data={
-        title:title
-      }
+      // Create a new FormData object
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('image', file);
+
       const cookies = new Cookies()
       const token = cookies.get('token')
-      const response = await axios.post('http://localhost:3000/user/create-playlist', data , {
+      const response = await axios.post('http://localhost:3000/user/create-playlist', formData , {
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
           'Authorization': `${token}`
         }
       })
       console.log(response.data.message)
-      getPlaylist()
+      getPlaylists()
     } catch (error) {
       console.error(error)
     }
@@ -77,12 +62,13 @@ const PlaylistList = () => {
         Create new playlist
         <form>
           <input type="text" className='bg-zinc-950 p-4' onChange={(e)=> setTitle(e.target.value)} placeholder="Playlist name" />
+          <input type="file" className='bg-zinc-950 p-4' name='image' onChange={(e)=>setFile(e.target.files[0])}/>
           <button onClick={handleCreatePlaylist} type="submit">Create</button>
         </form>
       </div>
       <div className="card-container">
         {
-          playlists.map((item, index) => (
+          playlists && playlists.map((item, index) => (
             <div key={index} className="card bg-zinc-200 p-2 my-2 flex flex-col gap-2" onClick={() => removeFromPlaylist({ item })}>
               <img src={item.image} alt={item.title} />
               <h2>{item.title}</h2>

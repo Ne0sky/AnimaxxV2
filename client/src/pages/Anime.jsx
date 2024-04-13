@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useGetAnimeById from '../hooks/useGetAnimeById';
 import { useParams, Link } from 'react-router-dom';
 import { FaPlay } from 'react-icons/fa';
@@ -13,20 +13,28 @@ import { RiAccountPinCircleFill } from "react-icons/ri";
 import { AiFillLike } from 'react-icons/ai';
 import { LuBadgePercent } from 'react-icons/lu';
 import useAddToWatchList from '../hooks/useAddtoWatchList';
-
-
+import useGetPlaylists from '../hooks/useGetPlaylists';
+import Cookies from 'universal-cookie';
+import axios from 'axios';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import { getPlaylists } from '../../../controllers/userActions';
 
 
 const Anime = () => {
   const { id } = useParams();
   const { animeData, isLoading, isError, error } = useGetAnimeById(id);
-  const { addToWatchList, isLoading: isAdding, error: addError } = useAddToWatchList();
+  const { playlists, getPlaylists, playlistError, playlistIsLoading } = useGetPlaylists();
+
   const [playlistId, setPlaylistId] = useState(null);
   const [anime, setAnime] = useState(null);
+  const [playlistlist, setPlaylistlist] = useState([]);
+  
+  const { addToWatchList } = useAddToWatchList();
+
+
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div className='flex w-screen h-80 text-white  justify-center items-center text-xl'>Error: {error}</div>;
@@ -49,21 +57,10 @@ const Anime = () => {
     },
   };
 
-  const playlistIds = [
-    { id: 1, name: 'Nostalgia' },
-    { id: 2, name: 'Action' },
-    { id: 3, name: 'Romance' },
-    { id: 4, name: 'Thriller' },
-    { id: 5, name: 'Horror' },
-    {
-      id: '661773ae72b176aeb96f17a0',
-      name: 'test'
-    },
-    {
-      id:'6617743d72b176aeb96f17a9',
-      name:'test2'
-    }
-  ];
+  
+
+ 
+
 
 
 
@@ -100,7 +97,13 @@ const Anime = () => {
       popularity: animeData.popularity,
     }
     setAnime(anime);
+    try{
     addToWatchList({ id: selectedPlaylistId, anime });
+    }catch(error){
+      console.log('Error:', error);
+    }
+
+    setPlaylistId(null);
 
   }
 
@@ -151,11 +154,13 @@ const Anime = () => {
                     className='bg-emerald-800 text-white px-4 py-2 rounded-full bg-opacity-80 border border-emerald-500 outline-none w-48'
                   >
                     <option value=''>Add to Playlist</option>
-                    {playlistIds.map((playlist) => (
-                      <option key={playlist.id} value={playlist.id}>
-                        {playlist.name}
-                      </option>
-                    ))}
+                    {
+                     playlists && playlists.map((playlist) => (
+                        <option key={playlist._id} value={playlist._id}>
+                          {playlist.title}
+                        </option>
+                      ))
+                    }
                   </select>
 
                 </div>
