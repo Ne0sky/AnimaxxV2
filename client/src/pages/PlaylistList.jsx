@@ -12,8 +12,8 @@ import { AiOutlineLike } from "react-icons/ai";
 import { MdOutlineEditNote } from "react-icons/md";
 import { MdDeleteForever } from "react-icons/md";
 
-
-
+import useCreatePlayList from '../hooks/useCreatePlayList';
+import useDeletePlaylist from '../hooks/useDeletePlayList';
 
 const PlaylistList = () => {
   const [title, setTitle] = useState('');
@@ -21,67 +21,28 @@ const PlaylistList = () => {
   const [desc, setDesc] = useState('');
   const [publicPlaylist, setPublicPlaylist] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const {createPlayList, isLoading:isCreationLoading, isError:isCreationError} = useCreatePlayList();
 
   const { playlists, playlistError, getPlaylists, playlistIsLoading } = useGetPlaylists();
+  const { deletePlaylist, isLoading: isDeleteLoading, error: deleteError } = useDeletePlaylist();
 
-  const deletePlaylist = (id) => async (e) => {
+  const handleDeletePlaylist = (id) => async (e) => {
     e.preventDefault();
-    try {
-      const cookies = new Cookies();
-      const token = cookies.get('token');
-      const response = await axios.post(
-        'http://localhost:3000/user/delete-playlist',
-        { id },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `${token}`,
-          },
-        }
-      );
-      console.log(response.data.message);
-      getPlaylists();
-    } catch (error) {
-      console.error(error);
-    }
+    const message = await deletePlaylist(id);
+    if(!isDeleteLoading && !deleteError) getPlaylists();
   };
 
   const handleCreatePlaylist = async (e) => {
     e.preventDefault();
-    try {
-      console.log(title);
-      // Create a new FormData object
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('image', file);
-      formData.append('description', desc);
-      formData.append('publicPlaylist', publicPlaylist);
-
-      const cookies = new Cookies();
-      const token = cookies.get('token');
-      const response = await axios.post(
-        'http://localhost:3000/user/create-playlist',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `${token}`,
-          },
-        }
-      );
-      console.log(response.data.message);
-      setModalIsOpen(false);
-      getPlaylists();
-    } catch (error) {
-      console.error(error);
-    }
+    const message = await createPlayList(title, file, desc, publicPlaylist);
+    if(!isCreationLoading && !isCreationError) getPlaylists();
   };
 
   const customStyles = {
     overlay: {
       backgroundColor: 'rgba(0, 0, 0, 0.2)',
       backdropFilter: 'blur(5px)',
-      webkitBackdropFilter: 'blur(5px)',
+      WebkitBackdropFilter: 'blur(5px)',
 
     },
     content: {
@@ -103,7 +64,7 @@ const PlaylistList = () => {
     <div className='text-white p-4 md:p-8 font-secondary w-screen overflow-x-hidden flex flex-col justify-center items-center py-12'>
       <h1 className='text-3xl font-bold'>Your Playlists</h1>
       <div className='py-8'>
-        <button className='bg-accent-2 p-2 rounded' onClick={() => setModalIsOpen(true)}>Create Playlist</button> {/* Button to open the modal */}
+        <button className='bg-accent-2 p-2 rounded' onClick={() => setModalIsOpen(true)}>Create Playlist</button> 
       </div>
       <div className='card-container w-full h-full py-16 grid grid-cols-1 gap-8 lg:grid-cols-2'>
         {
@@ -114,11 +75,11 @@ const PlaylistList = () => {
           playlistIsLoading && <div className='text-white text-center'>Loading...</div>
         }
         {
-          playlists && playlists.length===0 && !playlistIsLoading && <div className='text-white text-center'>No playlists found :/</div>
+          playlists && playlists.length===0 && !playlistIsLoading && <div className='text-white text-center w-screen flex justify-center items-center'>You have not created any playlists :/</div>
         }
         {playlists &&
           playlists.map((item, index) => (
-            <Link to={`/playlist/${item.url}`} key={index} className='card w-full hover:bg-zinc-800 p-4  flex flex-row gap-4' onClick={() => removeFromPlaylist({ item })}>
+            <Link to={`/playlist/${item.url}`} key={index} className='card w-full hover:bg-zinc-800 p-4  flex flex-row gap-4' >
               <img className='w-20 h-full lg:w-40 lg:h-40 object-cover rounded-lg' src={item.image} alt={item.title} />
               <div className='flex w-1/2 gap-4 justify-center flex-col'>
                 <h2 className='text-xl font-semibold'>{item.title}</h2>
@@ -135,7 +96,7 @@ const PlaylistList = () => {
                 <button className='bg-zinc-700 rounded-xl text-xl text-center flex items-center gap-4 p-3  md:w-32' >
                    <span className='hidden md:flex'>Edit</span><MdOutlineEditNote/>
                 </button>
-                <button onClick={deletePlaylist(item._id)} className='bg-red-500 p-3 text-xl flex items-center gap-4 rounded-xl text-center '>
+                <button onClick={handleDeletePlaylist(item._id)} className='bg-red-500 p-3 text-xl flex items-center gap-4 rounded-xl text-center '>
                   <span className='hidden md:flex'>Delete</span> <MdDeleteForever/>
                 </button>
               
@@ -147,7 +108,7 @@ const PlaylistList = () => {
       </div>
 
       {/* Modal */}
-      <Modal style={customStyles} isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}>
+      <Modal ariaHideApp={false} style={customStyles} isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}>
       <button className='text-right w-full text-white text-2xl flex justify-end' onClick={() => setModalIsOpen(false)}><MdCancel/></button> {/* Button to close the modal */}
         <h2 className='text-center text-white font-semibold text-2xl font-secondary'>Create new playlist</h2>
        

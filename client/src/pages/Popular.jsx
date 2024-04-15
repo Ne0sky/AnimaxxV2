@@ -66,16 +66,16 @@ const Popular = () => {
                 <div className='flex gap-12 flex-col lg:flex-row '>
                     
                     <div>
-                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#400e8c' className='card w-[90%] md:w-52 h-[300px]' />
-                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#400e8c' count={2} className='card w-[90%] md:w-52 ' />
+                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#adadad' className='card w-[90%] md:w-52 h-[300px]' />
+                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#adadad' count={3} className='card w-[90%] md:w-52 ' />
                     </div>
                     <div>
-                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#400e8c' className='card w-[90%] md:w-52 h-[300px]' />
-                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#400e8c' count={2} className='card w-[90%] md:w-52 ' />
+                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#adadad' className='card w-[90%] md:w-52 h-[300px]' />
+                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#adadad' count={3} className='card w-[90%] md:w-52 ' />
                     </div>
                     <div>
-                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#400e8c' className='card w-[90%] md:w-52 h-[300px]' />
-                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#400e8c' count={2} className='card w-[90%] md:w-52 ' />
+                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#adadad' className='card w-[90%] md:w-52 h-[300px]' />
+                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#adadad' count={3} className='card w-[90%] md:w-52 ' />
                     </div>
                     
                 </div>
