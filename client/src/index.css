@@ -5,11 +5,11 @@
 @tailwind utilities;
 
 body{
-    background-color: #0f0b15;
+    background-color: #121212;
 }
 
 .card{
-    background-color: #1f172b;
+    background-color: #212121;
     border-radius: 0.4rem;
 }
 

@@ -43,7 +43,7 @@ const Navbar = () => {
     return (
         <header className='font-secondary sticky top-0 z-50 bg-zinc-950 bg-opacity-80 backdrop-blur-md'>
             <nav className='text-white flex justify-between mx-auto sticky top-0 z-[20] w-full items-center py-6 px-16'>
-                <Link to='/'><h1 className='text-3xl font-semibold'>Anima<span className='text-rose-500'>xx</span></h1></Link>
+                <Link to='/'><h1 className='text-3xl font-semibold'>Anima<span className='text-accent-2'>xx</span></h1></Link>
                 <ul className='lg:flex items-center gap-6 text-sm hidden md:hidden'>
                     
                     <li>

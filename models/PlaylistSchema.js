@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const PlaylistSchema = new Schema(
   {
     title: String,
+    description: String,
     image: String,
     url: String,
     userId: String,

@@ -52,12 +52,12 @@ const Popular = () => {
   return (
     <div className='font-secondary text-white mx-auto w-full flex flex-col justify-center p-4 md:p-8 lg:p-16'>
         <div className='flex'>
-            <input type="text" placeholder="Search for an anime" className='bg-[#1f172b] text-white p-1 px-4 rounded-l-lg w-full md:w-3/4 lg:w-1/2' />
-            <Link className='bg-rose-800  p-2 rounded-r-2xl  inline-block' to='/search'><IoMdSearch className='text-3xl'/></Link>
+            <input type="text" placeholder="Search for an anime" className='bg-accent-1 text-white p-1 px-4 rounded-l-lg w-full md:w-3/4 lg:w-1/2' />
+            <Link className='bg-accent-2  p-2 rounded-r-2xl  inline-block' to='/search'><IoMdSearch className='text-3xl'/></Link>
 
         </div>
         <h1 className='text-2xl font-semibold my-8'>
-          <span className='text-rose-500 mx-2'>Top 10</span>Trending Animes
+          <span className='text-accent-2 mx-2'>Top 10</span>Trending Animes
         </h1>
         {
             !animeData   &&
@@ -66,16 +66,16 @@ const Popular = () => {
                 <div className='flex gap-12 flex-col lg:flex-row '>
                     
                     <div>
-                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' className='card w-[90%] md:w-52 h-[300px]' />
-                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' count={2} className='card w-[90%] md:w-52 ' />
+                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#400e8c' className='card w-[90%] md:w-52 h-[300px]' />
+                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#400e8c' count={2} className='card w-[90%] md:w-52 ' />
                     </div>
                     <div>
-                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' className='card w-[90%] md:w-52 h-[300px]' />
-                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' count={2} className='card w-[90%] md:w-52 ' />
+                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#400e8c' className='card w-[90%] md:w-52 h-[300px]' />
+                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#400e8c' count={2} className='card w-[90%] md:w-52 ' />
                     </div>
                     <div>
-                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' className='card w-[90%] md:w-52 h-[300px]' />
-                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' count={2} className='card w-[90%] md:w-52 ' />
+                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#400e8c' className='card w-[90%] md:w-52 h-[300px]' />
+                    <Skeleton enableAnimation={true} baseColor='accent-1' highlightColor='#400e8c' count={2} className='card w-[90%] md:w-52 ' />
                     </div>
                     
                 </div>
@@ -103,7 +103,7 @@ const Popular = () => {
               <Link target='_blank' to={`/anime/${anime.id}`}  className='card w-[90%] md:w-52 h-[400px] mx-4 block ' key={anime.id}>
                 <div className='relative h-[300px] w-full'>
                   <img className='w-full max-h-full object-cover overflow-hidden rounded-lg' src={anime.coverImage.extraLarge} alt={anime.title.romaji} />
-                  <div className='absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#1f172b]'></div>
+                  <div className='absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-accent-1'></div>
                 </div>
                 <div className='px-4'>
                   <h2 className='text-sm font-semibold my-2 overflow-hidden line-clamp-2 overflow-ellipsis'>{anime.title.english}</h2>
@@ -123,23 +123,23 @@ const Popular = () => {
 
         <div className='mt-20'>
           <h1 className='text-2xl font-semibold my-8'>
-            Popular Animes of <span className='text-rose-500 mx-2'>all time</span>
+            Popular Animes of <span className='text-accent-2 mx-2'>all time</span>
           </h1>
 
           {
             !popularAnimes && (
               <div className='flex gap-8'>
                 <div>
-                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' className='card w-[90%] md:w-52 h-[300px]' />
-                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' count={2} className='card w-[90%] md:w-52 ' />
+                    <Skeleton enableAnimation={true} baseColor='#1c0342' highlightColor='#1f172b' className='card w-[90%] md:w-52 h-[300px]' />
+                    <Skeleton enableAnimation={true} baseColor='#1c0342' highlightColor='#1f172b' count={2} className='card w-[90%] md:w-52 ' />
                     </div>
                     <div>
-                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' className='card w-[90%] md:w-52 h-[300px]' />
-                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' count={2} className='card w-[90%] md:w-52 ' />
+                    <Skeleton enableAnimation={true} baseColor='#1c0342' highlightColor='#1f172b' className='card w-[90%] md:w-52 h-[300px]' />
+                    <Skeleton enableAnimation={true} baseColor='#1c0342' highlightColor='#1f172b' count={2} className='card w-[90%] md:w-52 ' />
                     </div>
                     <div>
-                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' className='card w-[90%] md:w-52 h-[300px]' />
-                    <Skeleton enableAnimation={true} baseColor='#0f0b15' highlightColor='#1f172b' count={2} className='card w-[90%] md:w-52 ' />
+                    <Skeleton enableAnimation={true} baseColor='#1c0342' highlightColor='#1f172b' className='card w-[90%] md:w-52 h-[300px]' />
+                    <Skeleton enableAnimation={true} baseColor='#1c0342' highlightColor='#1f172b' count={2} className='card w-[90%] md:w-52 ' />
                     </div>
                     
                 </div>
@@ -152,7 +152,7 @@ const Popular = () => {
                 <Link to={`/anime/${anime.id}`} className='card w-80 md:w-52 h-[400px]  ' key={anime.id}>
                     <div className='relative h-[300px] w-full'>
                         <img className='w-full max-h-full object-cover overflow-hidden rounded-lg' src={anime.coverImage.extraLarge} alt={anime.title.romaji} />
-                        <div className='absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#1f172b]'></div>
+                        <div className='absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-accent-1'></div>
                     </div>
                     <div className='px-4'>
                   <h2 className='text-sm font-semibold my-2 overflow-hidden line-clamp-2 overflow-ellipsis'>{anime.title.english}</h2>

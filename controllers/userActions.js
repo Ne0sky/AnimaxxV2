@@ -2,16 +2,16 @@ import userdb from "../models/UserSchema.js";
 import playlistdb from "../models/PlaylistSchema.js";
 import Animedb from "../models/AnimeSchema.js";
 import cloudinary from "../config/cloudinary.js";
-import fileUpload from "express-fileupload";
+import dotenv from "dotenv";
+import { v4 as uuidv4 } from 'uuid';
+
+dotenv.config();
 
 export const addToPlaylist = async (req, res) => {
   try {
     const { id, anime } = req.body;
-    // Get the playlist
 
-    console.log('req:', req.body)
     const playlist = await playlistdb.findOne({ _id: id });
-    console.log(playlist);
     if (!playlist) {
       return res.status(404).json({ message: "Playlist not found" });
     }
@@ -23,10 +23,8 @@ export const addToPlaylist = async (req, res) => {
         .json({ message: "Anime already exists in the playlist" });
     }
 
-    // Add the anime to the playlist
     playlist.animeIds.push(anime.anilistId);
 
-    // Add the anime to animedb
     const animeinDocument = await Animedb.findOne({
       anilistId: anime.anilistId,
     });
@@ -54,8 +52,6 @@ export const addToPlaylist = async (req, res) => {
       animeinDocument.playlist.push(playlist._id);
       await animeinDocument.save();
     }
-
-    // Save the updated playlist object
     await playlist.save();
     res.status(200).json({ message: "Anime added to playlist successfully" });
   } catch (err) {
@@ -117,44 +113,32 @@ export const getPlaylists = async (req, res) => {
 
 export const createPlaylist = async (req, res) => {
   try {
-    const { title } = req.body;
-    const user = await userdb.findById(req.user.id);
-    
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    let imageUrl = ""; // Initialize imageUrl
-
+    const { title, description, publicPlaylist } = req.body;
+    let imageUrl = ""; 
     if (req.file) {
-      console.log(req.file);
-      // If a file is uploaded, upload it to Cloudinary
-      const result = await cloudinary.uploader.upload(req.file.path);
-
-      // Get the secure URL of the uploaded image from Cloudinary
+      const base64 = req.file.buffer.toString("base64");
+      const result = await cloudinary.uploader.upload(
+        "data:" + req.file.mimetype + ";base64," + base64
+      );
+      console.log(result);  
       imageUrl = result.secure_url;
     }
 
-    // Create a new playlist object
+    const uniqueUrl = uuidv4();
+
     const newPlaylist = new playlistdb({
       title: `${title}`,
-      image: imageUrl, // Set the image field to the Cloudinary URL
-      url: "",
-      userId: user._id,
-      publicPlaylist: false,
+      description: `${description}`,
+      image: imageUrl, 
+      url: uniqueUrl,
+      userId: req.user.id,
+      publicPlaylist: publicPlaylist,
       animeIds: [],
     });
-
-    // Save the new playlist to the database
     await newPlaylist.save();
-
-    // Update user's playlist array if needed
-    user.playlist.push(newPlaylist._id);
-    await user.save();
-
     res.status(200).json({
       message: "Playlist created successfully",
-      playlist: user.playlist,
+      playlist: newPlaylist,
     });
   } catch (err) {
     console.log(err);
@@ -162,29 +146,107 @@ export const createPlaylist = async (req, res) => {
   }
 };
 
-
-export const getAnimes = async (req, res) => {
+export const deletePlaylist = async (req, res) => {
   try {
     const { id } = req.body;
     const playlist = await playlistdb.findOne({ _id: id });
-    console.log(playlist);
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist not found" });
+    }
+    const publicId = playlist.image.split("/").pop().split(".")[0];
+     const result = await cloudinary.uploader.destroy(publicId);
+
+
+      const animes = await Animedb.find({ playlist: playlist._id });
+      animes.forEach(async (anime) => {
+        anime.playlist = anime.playlist.filter((item) => item !== id);
+        if (anime.playlist.length === 0) {
+          await Animedb.deleteOne({ _id: anime._id });
+        } else {
+          await anime.save();
+        }
+
+      });
+    
+    await playlistdb.deleteOne({ _id: id });
+    
+    res.status(200).json({ message: "Playlist deleted successfully" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+
+export const getAnimes = async (req, res) => {
+  try {
+    const { url } = req.body;
+    const playlist = await playlistdb.findOne({url: url });
+    console.log(playlist._id.toString(), "playlist id");
     if (playlist.publicPlaylist === false) {
       if (playlist.userId !== req.user.id) {
         return res.status(401).json({ message: "Unauthorized" });
       } else {
-        const animes = await Animedb.find({ playlist: playlist._id });
-        if (!animes) {
-          return res.status(404).json({ message: "Animes not found" });
+        const animes = await Animedb.find({ playlist: playlist._id.toString() });
+        console.log(animes);
+        const user = await userdb.findById(playlist.userId);
+        const publicViewOfAnime = animes.map((anime) => {
+          return {
+            title: anime.title,
+            type: anime.type,
+            genres: anime.genres,
+            episodes: anime.episodes,
+            coverImage: anime.coverImage,
+            format: anime.format,
+            description: anime.description,
+            status: anime.status,
+            season: anime.season,
+            userActions: anime.UserActions,
+            seasonYear: anime.seasonYear,
+            startDate: anime.startDate,
+            endDate: anime.endDate,
+          };
         }
-        res.status(200).json({ message: "Animes found successfully", animes });
+        );
+        const data = {
+          title: playlist.title,
+          madeBy: user.displayName,
+          description: playlist.description,
+          image: playlist.image,
+          animes: publicViewOfAnime,
+        };
+        res.status(200).json({ message: "Animes found successfully", data });
       }
     }
     if (playlist.publicPlaylist === true) {
       const animes = await Animedb.find({ playlists: playlist._id });
-      if (!animes) {
-        return res.status(404).json({ message: "Animes not found" });
-      }
-      res.status(200).json({ message: "Animes found successfully", animes });
+      const user = await userdb.findById(playlist.userId);
+      console.log(user.displayName)
+      const publicViewOfAnime = animes.map((anime) => {
+        return {
+          title: anime.title,
+          type: anime.type,
+          genres: anime.genres,
+          episodes: anime.episodes,
+          coverImage: anime.coverImage,
+          format: anime.format,
+          description: anime.description,
+          status: anime.status,
+          season: anime.season,
+          seasonYear: anime.seasonYear,
+          startDate: anime.startDate,
+          endDate: anime.endDate,
+        };
+      });
+      const data = {
+        title: playlist.title,
+        madeBy: user.displayName,
+        description: playlist.description,
+        image: playlist.image,
+        animes: publicViewOfAnime,
+      };
+      res.status(200).json({ message: "Animes found successfully", data});
     }
   } catch (err) {
     console.log(err);

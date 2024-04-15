@@ -5,19 +5,19 @@ import Cookies from 'universal-cookie'
 
 const PlayList = () => {
     const {id} = useParams()
-    const [animes, setAnimes] = useState([{}])
+    const [data, setData] = useState({})
     const getAnimes = async () => {
         try {
             const cookies = new Cookies()
             const token = cookies.get('token')
-            const response = await axios.post('http://localhost:3000/user/get-animes', {id:id}, {
+            const response = await axios.post('http://localhost:3000/user/get-animes', {url:id}, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `${token}`
                 }
             })
             console.log(response.data)
-            setAnimes(response.data.animes)
+            setData(response.data.data)
         } catch (error) {
             console.error(error)
         }
@@ -32,15 +32,23 @@ const PlayList = () => {
     <div>
         <h1>Playlist</h1>
         {
-            animes.length> 0 && animes.map((anime, id) => (
-                <div key={id} className='bg-zinc-200 p-2 my-2'>
-                    <h3>{anime.title}</h3>
-                    <p>{anime.synopsis}</p>
-                    <p>Rating: {anime.rating}</p>
-                    <p>Score: {anime.score}</p>
-                    
+            data && (
+                <div>
+                    <h1>{data.title}</h1>
+                    <h1>{data.description}</h1>
+                    <img src={data.image} alt={data.title} />
+                    <div>
+                        {
+                            data.animes && data.animes.map((anime, index) => (
+                                <div key={index}>
+                                    <h1>{anime.title}</h1>
+                                    <img src={anime.image} alt={anime.title} />
+                                </div>
+                            ))
+                        }
                 </div>
-            ))
+                </div>
+            )
         }
     </div>
   )

@@ -1,88 +1,180 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { removeFromPlaylist } from '../reducers/playlistSlice'
-import { useEffect, useState } from 'react'
-import axios from 'axios'
-import Cookies from 'universal-cookie'
-import { Link } from 'react-router-dom'
-import useGetPlaylists from '../hooks/useGetPlaylists'
+
+
+import React, { useState } from 'react';
+import Modal from 'react-modal';
+import { removeFromPlaylist } from '../reducers/playlistSlice';
+import axios from 'axios';
+import Cookies from 'universal-cookie';
+import { Link } from 'react-router-dom';
+import useGetPlaylists from '../hooks/useGetPlaylists';
+import { MdCancel } from "react-icons/md";
+import { AiOutlineLike } from "react-icons/ai";
+import { MdOutlineEditNote } from "react-icons/md";
+import { MdDeleteForever } from "react-icons/md";
+
+
+
+
 const PlaylistList = () => {
-  const [title, setTitle] = useState('')
-  const [file, setFile] = useState(null)
-  const { playlists, playlistError, getPlaylists , playlistIsLoading } = useGetPlaylists()
+  const [title, setTitle] = useState('');
+  const [file, setFile] = useState(null);
+  const [desc, setDesc] = useState('');
+  const [publicPlaylist, setPublicPlaylist] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  
+  const { playlists, playlistError, getPlaylists, playlistIsLoading } = useGetPlaylists();
 
-  const removeFromPlaylist = async (item) => {
+  const deletePlaylist = (id) => async (e) => {
+    e.preventDefault();
     try {
-      const cookies = new Cookies()
-      const token = cookies.get('token')
-      const response = await axios.post('http://localhost:3000/user/remove-from-playlist', item, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `${token}`
+      const cookies = new Cookies();
+      const token = cookies.get('token');
+      const response = await axios.post(
+        'http://localhost:3000/user/delete-playlist',
+        { id },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${token}`,
+          },
         }
-      })
-      console.log(response.data.message)
-      getPlaylists()
+      );
+      console.log(response.data.message);
+      getPlaylists();
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const handleCreatePlaylist = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      console.log(title)
+      console.log(title);
       // Create a new FormData object
       const formData = new FormData();
       formData.append('title', title);
       formData.append('image', file);
+      formData.append('description', desc);
+      formData.append('publicPlaylist', publicPlaylist);
 
-      const cookies = new Cookies()
-      const token = cookies.get('token')
-      const response = await axios.post('http://localhost:3000/user/create-playlist', formData , {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `${token}`
+      const cookies = new Cookies();
+      const token = cookies.get('token');
+      const response = await axios.post(
+        'http://localhost:3000/user/create-playlist',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `${token}`,
+          },
         }
-      })
-      console.log(response.data.message)
-      getPlaylists()
+      );
+      console.log(response.data.message);
+      setModalIsOpen(false);
+      getPlaylists();
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
+
+  const customStyles = {
+    overlay: {
+      backgroundColor: 'rgba(0, 0, 0, 0.2)',
+      backdropFilter: 'blur(5px)',
+      webkitBackdropFilter: 'blur(5px)',
+
+    },
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      backgroundColor: '#212121',
+      borderRadius: '8px',
+      border: 'none',
+
+
+    },
+  };
 
   return (
-    <div className='text-white'>
-      <h1 className='text-3xl text-red-600'>Playlist</h1>
-      <p className='text-lg text-gray-800'>Here are the items in your playlist. Click on an item to remove it.</p>
-      <div>
-        Create new playlist
-        <form>
-          <input type="text" className='bg-zinc-950 p-4' onChange={(e)=> setTitle(e.target.value)} placeholder="Playlist name" />
-          <input type="file" className='bg-zinc-950 p-4' name='image' onChange={(e)=>setFile(e.target.files[0])}/>
-          <button onClick={handleCreatePlaylist} type="submit">Create</button>
-        </form>
+    <div className='text-white p-4 md:p-8 font-secondary w-screen overflow-x-hidden flex flex-col justify-center items-center py-12'>
+      <h1 className='text-3xl font-bold'>Your Playlists</h1>
+      <div className='py-8'>
+        <button className='bg-accent-2 p-2 rounded' onClick={() => setModalIsOpen(true)}>Create Playlist</button> {/* Button to open the modal */}
       </div>
-      <div className="card-container">
+      <div className='card-container w-full h-full py-16 grid grid-cols-1 gap-8 lg:grid-cols-2'>
         {
-          playlists && playlists.map((item, index) => (
-            <div key={index} className="card bg-zinc-200 p-2 my-2 flex flex-col gap-2" onClick={() => removeFromPlaylist({ item })}>
-              <img src={item.image} alt={item.title} />
-              <h2>{item.title}</h2>
-              
-             {/* <p>{item.upvotes}</p>
-              <button className='block bg-blue-500 p-2 my-4 rounded' onClick={() => removeFromPlaylist({ item })}>Remove from Playlist</button> */}
-
-              <Link className='bg-blue-500 p-3 rounded-none w-36' to={`/playlist/${item._id}`}>View Playlist</Link>
-            </div>
-          ))
+          playlistError && <div className='text-white text-center'>Error: {playlistError}</div>
+          
         }
-      </div>
-    </div>
-  )
-}
+        {
+          playlistIsLoading && <div className='text-white text-center'>Loading...</div>
+        }
+        {
+          playlists && playlists.length===0 && !playlistIsLoading && <div className='text-white text-center'>No playlists found :/</div>
+        }
+        {playlists &&
+          playlists.map((item, index) => (
+            <Link to={`/playlist/${item.url}`} key={index} className='card w-full hover:bg-zinc-800 p-4  flex flex-row gap-4' onClick={() => removeFromPlaylist({ item })}>
+              <img className='w-20 h-full lg:w-40 lg:h-40 object-cover rounded-lg' src={item.image} alt={item.title} />
+              <div className='flex w-1/2 gap-4 justify-center flex-col'>
+                <h2 className='text-xl font-semibold'>{item.title}</h2>
+                <p className='line-clamp-2 text-xs md:text-base text-zinc-200 overflow-ellipsis'>{item.description}</p>
+                <div className='flex gap-4 items-center'>
+                <AiOutlineLike className='text-2xl ' />
+                <p>{item.likedBy.length}</p>
+                </div>
+                
+              </div>
+              <div className='flex flex-col justify-center gap-4 items-center'>
+                
+                
+                <button className='bg-zinc-700 rounded-xl text-xl text-center flex items-center gap-4 p-3  md:w-32' >
+                   <span className='hidden md:flex'>Edit</span><MdOutlineEditNote/>
+                </button>
+                <button onClick={deletePlaylist(item._id)} className='bg-red-500 p-3 text-xl flex items-center gap-4 rounded-xl text-center '>
+                  <span className='hidden md:flex'>Delete</span> <MdDeleteForever/>
+                </button>
+              
 
-export default PlaylistList
+
+              </div>
+            </Link>
+          ))}
+      </div>
+
+      {/* Modal */}
+      <Modal style={customStyles} isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}>
+      <button className='text-right w-full text-white text-2xl flex justify-end' onClick={() => setModalIsOpen(false)}><MdCancel/></button> {/* Button to close the modal */}
+        <h2 className='text-center text-white font-semibold text-2xl font-secondary'>Create new playlist</h2>
+       
+
+        <form className='flex flex-col justify-center items-center  gap-4 text-white font-main '>
+          <input type='text' className='bg-zinc-950 outline-none p-4 w-full mt-8 rounded-md' onChange={(e) => setTitle(e.target.value)} placeholder='Playlist name' />
+          <textarea type='text' className='bg-zinc-950 outline-none  p-4 w-full rounded-md' onChange={(e) => setDesc(e.target.value)} placeholder='Playlist Description' />
+          <input type='file' className='bg-zinc-950 outline-none  p-4 w-full mb-8 rounded-md' name='image' onChange={(e) => setFile(e.target.files[0])} />
+          <label className='flex items-center gap-4'>
+            <input type='checkbox' onChange={(e) => setPublicPlaylist(e.target.checked)} className='hidden' />
+            <span className={`relative w-12 h-6 items-center flex rounded-full  p-0.5 ${publicPlaylist? 'bg-gradient-to-r from-green-500 to-green-900':'bg-gradient-to-r from-zinc-900 to-zinc-950'}`}>
+              <span
+                className={`block w-5 h-5 rounded-full bg-white  transform transition-transform ${publicPlaylist ? 'translate-x-full ' : 'translate-x-0'
+                  }`}
+              ></span>
+            </span>
+            <span className='text-white  text-xs '>This is a {publicPlaylist ? 'Public' : 'Private'} playlist</span>
+          </label>
+
+
+          <button onClick={handleCreatePlaylist} type='submit' className='bg-accent-2 text-black p-3 rounded-xl '>
+            Create
+          </button>
+        </form>
+      </Modal>
+    </div>
+  );
+};
+
+export default PlaylistList;

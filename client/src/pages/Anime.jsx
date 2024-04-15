@@ -20,8 +20,7 @@ import axios from 'axios';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import { getPlaylists } from '../../../controllers/userActions';
-
+import 'swiper/css/effect-fade';
 
 const Anime = () => {
   const { id } = useParams();
