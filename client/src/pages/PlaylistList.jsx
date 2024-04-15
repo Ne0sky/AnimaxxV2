@@ -35,7 +35,10 @@ const PlaylistList = () => {
   const handleCreatePlaylist = async (e) => {
     e.preventDefault();
     const message = await createPlayList(title, file, desc, publicPlaylist);
-    if(!isCreationLoading && !isCreationError) getPlaylists();
+    if(!isCreationLoading && !isCreationError){
+      setModalIsOpen(false);
+      getPlaylists();
+    }
   };
 
   const customStyles = {

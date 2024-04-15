@@ -146,6 +146,28 @@ export const createPlaylist = async (req, res) => {
   }
 };
 
+export const editPlaylist = async (req, res) => {
+  try {
+    const { id, title, description, publicPlaylist } = req.body;
+    const playlist = await playlistdb.findOne({ _id: id });
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist not found" });
+    }
+    if (playlist.userId !== req.user.id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    playlist.title = title;
+    playlist.description = description;
+    playlist.publicPlaylist = publicPlaylist;
+    await playlist.save();
+    res.status(200).json({ message: "Playlist edited successfully", playlist });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
 export const deletePlaylist = async (req, res) => {
   try {
     const { id } = req.body;
