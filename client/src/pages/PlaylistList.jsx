@@ -1,10 +1,6 @@
 
-
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import { removeFromPlaylist } from '../reducers/playlistSlice';
-import axios from 'axios';
-import Cookies from 'universal-cookie';
 import { Link } from 'react-router-dom';
 import useGetPlaylists from '../hooks/useGetPlaylists';
 import { MdCancel } from "react-icons/md";
@@ -14,6 +10,7 @@ import { MdDeleteForever } from "react-icons/md";
 
 import useCreatePlayList from '../hooks/useCreatePlayList';
 import useDeletePlaylist from '../hooks/useDeletePlayList';
+import useLikePlayList from '../hooks/useLikePlayList';
 
 const PlaylistList = () => {
   const [title, setTitle] = useState('');
@@ -22,7 +19,7 @@ const PlaylistList = () => {
   const [publicPlaylist, setPublicPlaylist] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const {createPlayList, isLoading:isCreationLoading, isError:isCreationError} = useCreatePlayList();
-
+  const { likePlaylist, isLoading: isLikeLoading, isError: isLikeError } = useLikePlayList();
   const { playlists, playlistError, getPlaylists, playlistIsLoading } = useGetPlaylists();
   const { deletePlaylist, isLoading: isDeleteLoading, error: deleteError } = useDeletePlaylist();
 
@@ -39,6 +36,12 @@ const PlaylistList = () => {
       setModalIsOpen(false);
       getPlaylists();
     }
+  };
+
+  const handleLikePlaylist = async (id) => {
+    console.log(id);
+    const message = await likePlaylist(id);
+    if(!isLikeLoading && !isLikeError) getPlaylists();
   };
 
   const customStyles = {
@@ -63,6 +66,8 @@ const PlaylistList = () => {
     },
   };
 
+ 
+
   return (
     <div className='text-white p-4 md:p-8 font-secondary w-screen overflow-x-hidden flex flex-col justify-center items-center py-12'>
       <h1 className='text-3xl font-bold'>Your Playlists</h1>
@@ -82,13 +87,16 @@ const PlaylistList = () => {
         }
         {playlists &&
           playlists.map((item, index) => (
-            <Link to={`/playlist/${item.url}`} key={index} className='card w-full hover:bg-zinc-800 p-4  flex flex-row gap-4' >
+            <div key={index} className='card border border-green-700 hover:bg-zinc-800 p-4 rounded-xl  flex flex-row gap-4' >
               <img className='w-20 h-full lg:w-40 lg:h-40 object-cover rounded-lg' src={item.image} alt={item.title} />
-              <div className='flex w-1/2 gap-4 justify-center flex-col'>
+              <div className='flex w-1/2 gap-2 justify-center flex-col'>
+              <span className='text-xs bg-zinc-950  inline-block w-16 rounded-lg p-1 text-center'>{item.publicPlaylist ?'public ' : 'private ' }</span>
                 <h2 className='text-xl font-semibold'>{item.title}</h2>
                 <p className='line-clamp-2 text-xs md:text-base text-zinc-200 overflow-ellipsis'>{item.description}</p>
                 <div className='flex gap-4 items-center'>
-                <AiOutlineLike className='text-2xl ' />
+                <button onClick={()=> handleLikePlaylist(item._id)}>
+                  <AiOutlineLike className='text-2xl ' />
+                </button>
                 <p>{item.likedBy.length}</p>
                 </div>
                 
@@ -96,17 +104,19 @@ const PlaylistList = () => {
               <div className='flex flex-col justify-center gap-4 items-center'>
                 
                 
-                <button className='bg-zinc-700 rounded-xl text-xl text-center flex items-center gap-4 p-3  md:w-32' >
-                   <span className='hidden md:flex'>Edit</span><MdOutlineEditNote/>
+                <button className='bg-zinc-950 bg-opacity-50 border border-zinc-500 rounded-xl  text-center flex items-center gap-2 justify-center p-2  md:w-28' >
+                   <span className='hidden md:flex '>Edit</span><MdOutlineEditNote className='text-xl'/>
                 </button>
-                <button onClick={handleDeletePlaylist(item._id)} className='bg-red-500 p-3 text-xl flex items-center gap-4 rounded-xl text-center '>
-                  <span className='hidden md:flex'>Delete</span> <MdDeleteForever/>
+                <button onClick={handleDeletePlaylist(item._id)} className='bg-red-800 bg-opacity-50 p-2  flex items-center gap-2 justify-center rounded-xl text-center md:w-28 border border-rose-500'>
+                  <span className='hidden md:flex'>Delete</span> <MdDeleteForever className='text-xl'/>
                 </button>
+
+
               
 
 
               </div>
-            </Link>
+            </div>
           ))}
       </div>
 
