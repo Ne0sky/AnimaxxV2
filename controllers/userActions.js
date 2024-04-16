@@ -4,6 +4,7 @@ import Animedb from "../models/AnimeSchema.js";
 import cloudinary from "../config/cloudinary.js";
 import dotenv from "dotenv";
 import { v4 as uuidv4 } from "uuid";
+import { uploadImage, deleteImage } from "../utils/cloudinary.js";
 
 dotenv.config();
 
@@ -140,37 +141,46 @@ export const createPlaylist = async (req, res) => {
 
 export const editPlaylist = async (req, res) => {
   try {
+    const id = req.params.playlistId;
     const { title, description, publicPlaylist } = req.body;
-    const id = req.params.id;
+    console.log("Request body", req.body)
     const playlist = await playlistdb.findOne({ _id: id });
-    let imageUrl = "";
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist not found" });
+    }
+
+    console.log('Original playlist:', playlist);
+
+    let image = playlist.image;
     if (req.file) {
-      try {
+      if (playlist.image !== "") {
         const publicId = playlist.image.split("/").pop().split(".")[0];
         await cloudinary.uploader.destroy(publicId);
-      } catch (err) {
-        console.log(err);
       }
       const base64 = req.file.buffer.toString("base64");
       const result = await cloudinary.uploader.upload(
         "data:" + req.file.mimetype + ";base64," + base64
       );
-      imageUrl = result.secure_url;
-      playlist.image = imageUrl;
+      image = result.secure_url;
     }
 
-    playlist.title = title;
-    playlist.description = description;
-    playlist.publicPlaylist = publicPlaylist;
-    await playlist.save();
-    res
-      .status(200)
-      .json({ message: "Playlist updated successfully", playlist });
-  } catch (err) {
-    console.log(err);
+    console.log('new title:', title)
+
+    const updatedPlaylist = await playlistdb.findByIdAndUpdate(
+      id,
+      { title, description, publicPlaylist, image },
+      { new: true }
+    );
+
+    console.log('Updated playlist:', updatedPlaylist);
+
+    res.status(200).json({ message: "Playlist updated successfully", data: updatedPlaylist });
+  } catch (error) {
+    console.error('Error updating playlist:', error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 export const deletePlaylist = async (req, res) => {
   try {

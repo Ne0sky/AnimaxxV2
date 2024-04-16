@@ -20,6 +20,6 @@ router.get("/playlist", verifyUser, getPlaylists);
 router.post("/create-playlist", verifyUser, upload.single('image'), createPlaylist);
 router.post("/get-animes", verifyUser, getAnimes);
 router.post("/playlist/likeunlike/:playlistId", verifyUser, likeUnlikePlaylist); 
-router.patch("/playlist/:id/edit", verifyUser, editPlaylist);
+router.post("/playlist/edit/:playlistId", verifyUser, editPlaylist);
 
 export default router;
