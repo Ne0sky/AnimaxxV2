@@ -2,12 +2,11 @@ import express from "express";
 const router = express.Router();
 import {
   getAnimes,
-  likePlaylist,
+  likeUnlikePlaylist,
   getPlaylists,
   addToPlaylist,
   createPlaylist,
   removeFromPlaylist,
-  unlikePlaylist,
   deletePlaylist,
   editPlaylist
 } from "../controllers/userActions.js";
@@ -20,8 +19,7 @@ router.post("/delete-playlist", verifyUser, deletePlaylist)
 router.get("/playlist", verifyUser, getPlaylists);
 router.post("/create-playlist", verifyUser, upload.single('image'), createPlaylist);
 router.post("/get-animes", verifyUser, getAnimes);
-router.get("/playlist/:id/like", verifyUser, likePlaylist); 
-router.get("/playlist/:id/unlike", verifyUser, unlikePlaylist); 
+router.post("/playlist/likeunlike/:playlistId", verifyUser, likeUnlikePlaylist); 
 router.patch("/playlist/:id/edit", verifyUser, editPlaylist);
 
 export default router;
