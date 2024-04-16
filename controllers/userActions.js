@@ -62,39 +62,21 @@ export const addToPlaylist = async (req, res) => {
 
 export const removeFromPlaylist = async (req, res) => {
   try {
-    const { id } = req.body.item;
-
-    // Find the user by ID
-    const user = await userdb.findById(req.user.id);
-    // Check if the user exists
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    const animeId = req.params.animeId
+    const playlistId = req.params.playlistId
+    const playlist = await playlistdb.findOne({ _id: playlistId });
+    const anime = await Animedb.findOne({ anilistId: animeId })
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist not found" });
     }
-    // Check if the item exists in the playlist
-    const existingItem = user.playlist.find(
-      (item) => item.id === id.toString()
-    );
-    if (!existingItem) {
-      return res
-        .status(404)
-        .json({ message: "Item not found in the playlist" });
+    if(playlist.userId !== req.user.id) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
-
-    // Remove the item from the playlist
-    user.playlist = user.playlist.filter((item) => item.id !== id.toString());
-
-    // Save the updated user object
-    await user.save();
-    res
-      .status(200)
-      .json({
-        message: "Item removed from playlist successfully",
-        playlist: user.playlist,
-      });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Internal server error" });
-  }
+    playlist.animeIds = playlist.animeIds.filter((id) => id !== animeId);
+    
+  } catch (error) {
+    
+  }  
 };
 
 export const getPlaylists = async (req, res) => {
