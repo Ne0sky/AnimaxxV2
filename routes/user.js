@@ -20,7 +20,7 @@ router.post("/delete-playlist", verifyUser, deletePlaylist)
 router.get("/playlist", verifyUser, getPlaylists);
 router.post("/create-playlist", verifyUser, upload.single('image'), createPlaylist);
 router.post("/get-animes", verifyUser, getAnimes);
-router.get("/playlist/:id/like", verifyUser, likePlaylist); // send the playlist id as a param
+router.get("/playlist/:id/like", verifyUser, likePlaylist); 
 router.get("/playlist/:id/unlike", verifyUser, unlikePlaylist); 
 router.patch("/playlist/:id/edit", verifyUser, editPlaylist);
 

@@ -16,7 +16,6 @@ export const addToPlaylist = async (req, res) => {
       return res.status(404).json({ message: "Playlist not found" });
     }
 
-    // Check if the anime already exists in the playlist
     if (playlist.animeIds.includes(anime.anilistId)) {
       return res
         .status(400)
@@ -130,19 +129,30 @@ export const createPlaylist = async (req, res) => {
 
 export const editPlaylist = async (req, res) => {
   try {
-    const { id, title, description, publicPlaylist } = req.body;
-    const playlist = await playlistdb.findOne({ _id: id });
-    if (!playlist) {
-      return res.status(404).json({ message: "Playlist not found" });
+    const { title, description, publicPlaylist } = req.body;
+    const id = req.params.id;
+    const playlist = await playlistdb.findOne({ _id: id }); 
+    let imageUrl = "";
+    if (req.file) {
+      try {
+        const publicId = playlist.image.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(publicId);
+      } catch (err) {
+        console.log(err);
+      }
+      const base64 = req.file.buffer.toString("base64");
+      const result = await cloudinary.uploader.upload(
+        "data:" + req.file.mimetype + ";base64," + base64
+      );
+      imageUrl = result.secure_url;
+      playlist.image = imageUrl;
     }
-    if (playlist.userId !== req.user.id) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+
     playlist.title = title;
     playlist.description = description;
     playlist.publicPlaylist = publicPlaylist;
     await playlist.save();
-    res.status(200).json({ message: "Playlist edited successfully", playlist });
+    res.status(200).json({ message: "Playlist updated successfully", playlist });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal server error" });
@@ -261,6 +271,7 @@ export const getAnimes = async (req, res) => {
 export const likePlaylist = async (req, res) => {
   try {
     const { id } = req.params.id;
+    console.log(id, 'id');
     const playlist = await playlistdb.findOne({ _id: id });
     if (!playlist) {
       return res.status(404).json({ message: "Playlist not found" });
