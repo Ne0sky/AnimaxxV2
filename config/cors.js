@@ -5,5 +5,4 @@ const cors = {
   origin: process.env.CORS_ORIGIN.split(","),
   credentials: true,
 };
-
 export default cors;

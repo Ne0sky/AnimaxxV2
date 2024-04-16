@@ -3,7 +3,7 @@ import playlistdb from "../models/PlaylistSchema.js";
 import Animedb from "../models/AnimeSchema.js";
 import cloudinary from "../config/cloudinary.js";
 import dotenv from "dotenv";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 dotenv.config();
 
@@ -61,14 +61,14 @@ export const addToPlaylist = async (req, res) => {
 
 export const removeFromPlaylist = async (req, res) => {
   try {
-    const animeId = req.params.animeId
-    const playlistId = req.params.playlistId
+    const animeId = req.params.animeId;
+    const playlistId = req.params.playlistId;
     const playlist = await playlistdb.findOne({ _id: playlistId });
-    const anime = await Animedb.findOne({ anilistId: animeId })
+    const anime = await Animedb.findOne({ anilistId: animeId });
     if (!playlist) {
       return res.status(404).json({ message: "Playlist not found" });
     }
-    if(playlist.userId !== req.user.id) {
+    if (playlist.userId !== req.user.id) {
       return res.status(401).json({ message: "Unauthorized" });
     }
     playlist.animeIds = playlist.animeIds.filter((id) => id !== animeId);
@@ -79,12 +79,13 @@ export const removeFromPlaylist = async (req, res) => {
       await anime.save();
     }
     await playlist.save();
-    res.status(200).json({ message: "Anime removed from playlist successfully" });
-    
+    res
+      .status(200)
+      .json({ message: "Anime removed from playlist successfully" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
-  }  
+  }
 };
 
 export const getPlaylists = async (req, res) => {
@@ -93,8 +94,10 @@ export const getPlaylists = async (req, res) => {
     const playlists = await playlistdb.find({ userId: id });
     if (!playlists) {
       return res.status(404).json({ message: "Playlist not found" });
-    }
-    else return res.status(200).json({ message: "Playlists found successfully", playlists });
+    } else
+      return res
+        .status(200)
+        .json({ message: "Playlists found successfully", playlists });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Internal server error" });
@@ -104,13 +107,12 @@ export const getPlaylists = async (req, res) => {
 export const createPlaylist = async (req, res) => {
   try {
     const { title, description, publicPlaylist } = req.body;
-    let imageUrl = ""; 
+    let imageUrl = "";
     if (req.file) {
       const base64 = req.file.buffer.toString("base64");
       const result = await cloudinary.uploader.upload(
         "data:" + req.file.mimetype + ";base64," + base64
       );
-      console.log(result);  
       imageUrl = result.secure_url;
     }
 
@@ -119,7 +121,7 @@ export const createPlaylist = async (req, res) => {
     const newPlaylist = new playlistdb({
       title: `${title}`,
       description: `${description}`,
-      image: imageUrl, 
+      image: imageUrl,
       url: uniqueUrl,
       userId: req.user.id,
       publicPlaylist: publicPlaylist,
@@ -140,7 +142,7 @@ export const editPlaylist = async (req, res) => {
   try {
     const { title, description, publicPlaylist } = req.body;
     const id = req.params.id;
-    const playlist = await playlistdb.findOne({ _id: id }); 
+    const playlist = await playlistdb.findOne({ _id: id });
     let imageUrl = "";
     if (req.file) {
       try {
@@ -161,13 +163,14 @@ export const editPlaylist = async (req, res) => {
     playlist.description = description;
     playlist.publicPlaylist = publicPlaylist;
     await playlist.save();
-    res.status(200).json({ message: "Playlist updated successfully", playlist });
+    res
+      .status(200)
+      .json({ message: "Playlist updated successfully", playlist });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 export const deletePlaylist = async (req, res) => {
   try {
@@ -176,23 +179,23 @@ export const deletePlaylist = async (req, res) => {
     if (!playlist) {
       return res.status(404).json({ message: "Playlist not found" });
     }
-    const publicId = playlist.image.split("/").pop().split(".")[0];
-     const result = await cloudinary.uploader.destroy(publicId);
+    if (playlist.image != "") {
+      const publicId = playlist.image.split("/").pop().split(".")[0];
+      const result = await cloudinary.uploader.destroy(publicId);
+    }
 
+    const animes = await Animedb.find({ playlist: playlist._id });
+    animes.forEach(async (anime) => {
+      anime.playlist = anime.playlist.filter((item) => item !== id);
+      if (anime.playlist.length === 0) {
+        await Animedb.deleteOne({ _id: anime._id });
+      } else {
+        await anime.save();
+      }
+    });
 
-      const animes = await Animedb.find({ playlist: playlist._id });
-      animes.forEach(async (anime) => {
-        anime.playlist = anime.playlist.filter((item) => item !== id);
-        if (anime.playlist.length === 0) {
-          await Animedb.deleteOne({ _id: anime._id });
-        } else {
-          await anime.save();
-        }
-
-      });
-    
     await playlistdb.deleteOne({ _id: id });
-    
+
     res.status(200).json({ message: "Playlist deleted successfully" });
   } catch (err) {
     console.log(err);
@@ -200,19 +203,17 @@ export const deletePlaylist = async (req, res) => {
   }
 };
 
-
-
 export const getAnimes = async (req, res) => {
   try {
     const { url } = req.body;
-    const playlist = await playlistdb.findOne({url: url });
-    console.log(playlist._id.toString(), "playlist id");
+    const playlist = await playlistdb.findOne({ url: url });
     if (playlist.publicPlaylist === false) {
       if (playlist.userId !== req.user.id) {
         return res.status(401).json({ message: "Unauthorized" });
       } else {
-        const animes = await Animedb.find({ playlist: playlist._id.toString() });
-        console.log(animes);
+        const animes = await Animedb.find({
+          playlist: playlist._id.toString(),
+        });
         const user = await userdb.findById(playlist.userId);
         const publicViewOfAnime = animes.map((anime) => {
           return {
@@ -230,8 +231,7 @@ export const getAnimes = async (req, res) => {
             startDate: anime.startDate,
             endDate: anime.endDate,
           };
-        }
-        );
+        });
         const data = {
           title: playlist.title,
           madeBy: user.displayName,
@@ -245,7 +245,6 @@ export const getAnimes = async (req, res) => {
     if (playlist.publicPlaylist === true) {
       const animes = await Animedb.find({ playlists: playlist._id });
       const user = await userdb.findById(playlist.userId);
-      console.log(user.displayName)
       const publicViewOfAnime = animes.map((anime) => {
         return {
           title: anime.title,
@@ -269,7 +268,7 @@ export const getAnimes = async (req, res) => {
         image: playlist.image,
         animes: publicViewOfAnime,
       };
-      res.status(200).json({ message: "Animes found successfully", data});
+      res.status(200).json({ message: "Animes found successfully", data });
     }
   } catch (err) {
     console.log(err);
@@ -277,41 +276,27 @@ export const getAnimes = async (req, res) => {
   }
 };
 
-export const likePlaylist = async (req, res) => {
+export const likeUnlikePlaylist = async (req, res) => {
   try {
-    const { id } = req.params.id;
-    console.log(id, 'id');
+    const id = req.params.playlistId;
+    const user_id = req.user.id;
     const playlist = await playlistdb.findOne({ _id: id });
     if (!playlist) {
       return res.status(404).json({ message: "Playlist not found" });
     }
-    if (playlist.likedBy.includes(req.user.id)) {
-      return res.status(400).json({ message: "Playlist already liked" });
+    if (playlist.likedBy.includes(user_id)) {
+      playlist.likedBy = playlist.likedBy.filter((id) => id !== user_id);
+      await playlist.save();
+      return res
+        .status(200)
+        .json({ message: "Playlist unliked successfully", playlist });
+    } else {
+      playlist.likedBy.push(user_id);
+      await playlist.save();
+      return res
+        .status(200)
+        .json({ message: "Playlist liked successfully", playlist });
     }
-    playlist.likedBy.push(req.user.id);
-    await playlist.save();
-    res.status(200).json({ message: "Playlist liked successfully", playlist });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-export const unlikePlaylist = async (req, res) => {
-  try {
-    const { id } = req.params.id;
-    const playlist = await playlistdb.findOne({ _id: id });
-    if (!playlist) {
-      return res.status(404).json({ message: "Playlist not found" });
-    }
-    if (!playlist.likedBy.includes(req.user.id)) {
-      return res.status(400).json({ message: "Playlist not liked" });
-    }
-    playlist.likedBy = playlist.likedBy.filter((id) => id !== req.user.id);
-    await playlist.save();
-    res
-      .status(200)
-      .json({ message: "Playlist unliked successfully", playlist });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
