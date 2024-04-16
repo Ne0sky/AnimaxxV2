@@ -17,7 +17,7 @@ const useEditPlayList = () => {
       console.log("Editing playlist...");
       const formData = new FormData();
       formData.append("title", title);
-      formData.append("image", file); // Make sure file is correctly obtained from your component
+      formData.append("image", file); 
       formData.append("description", description);
       formData.append("publicPlaylist", publicPlaylist);
 
