@@ -23,7 +23,7 @@ try {
   console.log("Error:", error);
 }
 
-app.use(cors(corsOption));
+app.use(cors());
 app.use(express.json());
 app.use(
   session({

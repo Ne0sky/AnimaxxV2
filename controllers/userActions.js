@@ -72,9 +72,18 @@ export const removeFromPlaylist = async (req, res) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
     playlist.animeIds = playlist.animeIds.filter((id) => id !== animeId);
+    anime.playlist = anime.playlist.filter((id) => id !== playlistId);
+    if (anime.playlist.length === 0) {
+      await Animedb.deleteOne({ _id: anime._id });
+    } else {
+      await anime.save();
+    }
+    await playlist.save();
+    res.status(200).json({ message: "Anime removed from playlist successfully" });
     
   } catch (error) {
-    
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
   }  
 };
 
