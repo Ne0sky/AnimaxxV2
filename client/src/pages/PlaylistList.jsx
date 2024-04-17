@@ -11,6 +11,8 @@ import useCreatePlayList from '../hooks/useCreatePlayList';
 import useEditPlayList from '../hooks/useEditPlayList';
 import CreatePlayListModal from '../components/CreatePlayListModal'
 import EditPlayListModal from '../components/EditPlayListModal';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 const PlaylistList = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -62,8 +64,7 @@ const PlaylistList = () => {
   };
 
 
-  const handleCreatePlayList = async (title, desc, publicPlaylist, file) => {
-    const message = await createPlayList(title, file, desc, publicPlaylist);
+  const handleCreatePlayList = () => {
     if (!isCreationLoading && !isCreationError) {
       setModalIsOpen(false);
       getPlaylists();
@@ -86,7 +87,9 @@ const PlaylistList = () => {
           
         }
         {
-          playlistIsLoading && <div className='text-white text-center'>Loading...</div>
+          playlistIsLoading && <div className='text-white text-center'>
+            <CircularProgress />
+          </div>
         }
         {
           playlists && playlists.length===0 && !playlistIsLoading && <div className='text-white text-center w-screen flex justify-center items-center'>You have not created any playlists :/</div>
@@ -94,7 +97,7 @@ const PlaylistList = () => {
         
         {playlists &&
           playlists.map((item, index) => (
-            <div key={index} className='card border border-green-800  relative w-full p-4 rounded-xl  flex flex-row gap-4' >
+            <div key={index} className='card   relative w-full p-4 rounded-xl  flex flex-row gap-4' >
               <div className='absolute  z-1 inset-0 bg-gradient-to-l from-transparent via-black to-black rounded-lg'>
               </div>
               <img className='w-full h-full absolute inset-0 opacity-20 z-0 object-cover rounded-lg' src={item.image} alt={item.title} />
@@ -117,13 +120,14 @@ const PlaylistList = () => {
                 <button onClick={handleEditPlayList(item._id)} className='bg-zinc-950 bg-opacity-50 border border-zinc-500 rounded-xl  text-center flex items-center gap-2 justify-center p-1  md:w-28' >
                    <span className='hidden md:flex '>Edit</span><MdOutlineEditNote className='text-xl'/>
                 </button>
-                <button onClick={handleDeletePlaylist(item._id)} className='bg-red-800 bg-opacity-50 p-1  flex items-center gap-2 justify-center rounded-xl text-center md:w-28 border border-rose-500'>
-                  <span className='hidden md:flex'>Delete</span> <MdDeleteForever className='text-xl'/>
+                <button onClick={handleDeletePlaylist(item._id)} className='bg-red-800 bg-opacity-50 p-1  flex items-center gap-2 justify-center rounded-xl text-center md:w-28 border border-rose-500' disabled={isDeleteLoading}>
+                  <span className='hidden md:flex' >Delete</span> 
+                  
                 </button>
 
-                <button className='bg-accent-2 bg-opacity-50 p-1  flex items-center gap-2 justify-center rounded-xl text-center md:w-28 border border-accent-2'>
-                  <Link to={`/playlist/${item.url}`}>View</Link>
-                </button>
+                <Link to={`/playlist/${item.url}`}className='bg-accent-2 bg-opacity-50 p-1  flex items-center gap-2 justify-center rounded-xl text-center md:w-28 border border-accent-2'>
+                  <p >View</p>
+                </Link>
               </div>
             </div>
           ))}

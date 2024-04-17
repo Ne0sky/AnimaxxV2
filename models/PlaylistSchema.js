@@ -4,7 +4,10 @@ const Schema = mongoose.Schema;
 
 const PlaylistSchema = new Schema(
   {
-    title: String,
+    title: {
+      type: String,
+      required: true,
+    },
     description: String,
     image: String,
     url: String,

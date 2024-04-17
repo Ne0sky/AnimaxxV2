@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
-
+import toast from 'react-hot-toast';
 const useCreatePlayList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const createPlayList = async (title, file, description, publicPlaylist) => {
-    setIsLoading(true);
-    setError(null);
+    
 
     try {
+      setIsLoading(true);
+    setError(null);
       const formData = new FormData();
       formData.append('title', title);
       formData.append('image', file);
@@ -28,10 +29,12 @@ const useCreatePlayList = () => {
       });
 
       setIsLoading(false);
+      toast.success(response.data.message);
       return response.data.message;
     } catch (error) {
       setIsLoading(false);
       setError(error);
+      toast.error(error.response.data.message);
       console.error(error);
       return null;
     }
