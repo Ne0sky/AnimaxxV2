@@ -64,8 +64,9 @@ export const removeFromPlaylist = async (req, res) => {
   try {
     const animeId = req.params.animeId;
     const playlistId = req.params.playlistId;
+    console.log(playlistId, animeId,);
     const playlist = await playlistdb.findOne({ _id: playlistId });
-    const anime = await Animedb.findOne({ anilistId: animeId });
+    const anime = await Animedb.findOne({ _id: animeId });
     if (!playlist) {
       return res.status(404).json({ message: "Playlist not found" });
     }
@@ -90,6 +91,7 @@ export const removeFromPlaylist = async (req, res) => {
 };
 
 export const getPlaylists = async (req, res) => {
+
   try {
     const { id } = req.user;
     const playlists = await playlistdb.find({ userId: id });
@@ -227,6 +229,7 @@ export const getAnimes = async (req, res) => {
         const user = await userdb.findById(playlist.userId);
         const publicViewOfAnime = animes.map((anime) => {
           return {
+            animeId: anime._id,
             title: anime.title,
             type: anime.type,
             genres: anime.genres,
@@ -243,6 +246,7 @@ export const getAnimes = async (req, res) => {
           };
         });
         const data = {
+          playlistId: playlist._id,
           title: playlist.title,
           madeBy: user.displayName,
           description: playlist.description,
@@ -312,3 +316,4 @@ export const likeUnlikePlaylist = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+

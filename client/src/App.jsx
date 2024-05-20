@@ -24,7 +24,7 @@ function App() {
       <Route path="playlist/:id" element={<PlayList />} />
       <Route path="watched" element={<Watched />} />
       <Route path="anime/:id" element={<Anime />} />
-      <Route path="search" element={<Search />} />
+      <Route path="search/:search" element={<Search />} />
       <Route path='popular' element={<Popular />} />
     </Routes>
     </>

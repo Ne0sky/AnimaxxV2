@@ -3,7 +3,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const verifyUser = (req, res, next) => {
-    let token = req.headers.authorization;
+    const token = req.get("Authorization");
+    console.log("token:",token);
     if (!token) {
         return res.status(401).json({
             message: "Access Denied",

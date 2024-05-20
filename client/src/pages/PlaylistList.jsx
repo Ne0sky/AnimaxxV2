@@ -98,9 +98,8 @@ const PlaylistList = () => {
         {playlists &&
           playlists.map((item, index) => (
             <div key={index} className='card   relative w-full p-4 rounded-xl  flex flex-row gap-4' >
-              <div className='absolute  z-1 inset-0 bg-gradient-to-l from-transparent via-black to-black rounded-lg'>
+              <div className='absolute  z-1 inset-0 bg-zinc-950 border border-neutral-700 rounded-lg'>
               </div>
-              <img className='w-full h-full absolute inset-0 opacity-20 z-0 object-cover rounded-lg' src={item.image} alt={item.title} />
               <img className='w-20 h-full relative  z-2 lg:w-40 lg:h-40 object-cover rounded-lg' src={item.image} alt={item.title} />
               <div className='flex w-1/2 relative  z-8 gap-2 justify-center flex-col'>
               <span className='text-xs bg-white  text-black inline-block w-16 rounded-lg p-1 text-center'>{item.publicPlaylist ?'public ' : 'private ' }</span>

@@ -14,7 +14,7 @@ import { verifyUser } from "../middleware/auth.js";
 import upload from "../middleware/multer.js";
 
 router.post("/add-to-playlist", verifyUser, addToPlaylist);
-router.post("/remove-from-playlist", verifyUser, removeFromPlaylist);
+router.post("/remove-from-playlist/:playlistId/:animeId", verifyUser, removeFromPlaylist);
 router.post("/delete-playlist", verifyUser, deletePlaylist)
 router.get("/playlist", verifyUser, getPlaylists);
 router.post("/create-playlist", verifyUser, upload.single('image'), createPlaylist);
