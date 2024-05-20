@@ -5,9 +5,9 @@ An anime tracking and sharing website.
 
 Check out our demo video to see AnimaxxV2 in action:
 
-[![Demo Video](./demo_video_thumbnail.png)]([./demo_video.mp4](https://www.youtube.com/watch?v=G51FS4HqSzc))
+[![Demo Video](./demo_video_thumbnail.png)](./demo.mp4)
 
-Simply click the image above or [click here](https://www.youtube.com/watch?v=G51FS4HqSzc) to watch the demo video.
+Simply click the image above or [click here](./demo_video.mp4) to watch the demo video.
 
 ## Tech Stack
 
