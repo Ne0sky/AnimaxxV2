@@ -26,17 +26,17 @@ const Login = () => {
         login({email, password})
     }
   return (
-    <div className='w-full flex flex-col justify-center items-center pt-20'>
+    <div className='w-full flex text-white flex-col font-secondary justify-center items-center pt-20'>
         <h1 className='text-3xl font-semibold py-8'>Login</h1>
-        <form className='flex flex-col gap-4 w-72 bg-slate-300 p-8 rounded-lg'>
-            <input type="email" className='p-2 rounded-md'
+        <form className='flex flex-col gap-4 w-72 bg-zinc-800 p-8 rounded-lg'>
+            <input type="email" className='p-2 bg-black rounded-md'
              onChange={e => setEmail(e.target.value)} 
              placeholder="Email" />
             <input type="password"
             onChange={e => setPassword(e.target.value)}
-            className='p-2 rounded-md' placeholder="Password" />
+            className='p-2 rounded-md bg-black' placeholder="Password" />
             <button type="submit" className='bg-blue-800 p-2 rounded-md text-white' onClick={handleLogin}>Login</button>
-            <p>Not regestered?  <Link to='/signup' >Create an account</Link></p>
+            <p>Not regestered?  <Link to='/signup' className='text-rose-600' >Create an account</Link></p>
         </form>
         <button className='my-4 p-4 bg-rose-700 text-white w-72 rounded-lg' onClick={loginWithGoogle}>
             Sign-In with Google

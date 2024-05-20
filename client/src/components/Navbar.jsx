@@ -49,9 +49,7 @@ const Navbar = () => {
                     <li>
                         <NavLink to="/">Home</NavLink>
                     </li>
-                    <li>
-                        <NavLink to="/search">Search</NavLink>
-                    </li>
+                   
                     <li>
                         <NavLink to="/popular">Popular</NavLink>
                     </li>
@@ -91,9 +89,7 @@ const Navbar = () => {
                         <li>
                             <NavLink to="/">Home</NavLink>
                         </li>
-                        <li>
-                            <NavLink to="/search">Search</NavLink>
-                        </li>
+                       
                         <li>
                             <NavLink to="/popular">Popular</NavLink>
                         </li>

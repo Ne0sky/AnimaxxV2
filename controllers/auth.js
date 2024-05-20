@@ -4,7 +4,7 @@ import userdb from "../models/UserSchema.js";
 
 export const register = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, displayName } = req.body;
     const user = await userdb.findOne({ email });
     if (user) {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
@@ -14,12 +14,14 @@ export const register = async (req, res) => {
         user: {
           id: user._id,
           email: user.email,
+          displayName: user.displayName,
         },
       });
     }
     const newUser = new userdb({
       email,
       password,
+      displayName,
     });
     const salt = await bcrypt.genSalt(10);
     newUser.password = await bcrypt.hash(password, salt);
@@ -54,6 +56,7 @@ export const login = async (req, res) => {
       user: {
         id: user._id,
         email: user.email,
+        displayName: user.displayName,
       },
     });
   } catch (err) {

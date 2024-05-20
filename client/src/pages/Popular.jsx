@@ -17,7 +17,7 @@ const Popular = () => {
   const { animeData, isLoading, isError, error } = useGetTrendingAnimes();
   const { popularAnimes, fetchNextPage, isFetchingNextPage, status } = useGetPopularAnimes();
   const { ref, inView } = useInView();
-
+ const [search, setSearch] = React.useState('')
   useEffect(() => {
     if (inView) {
       console.log('Fetching next page...');
@@ -52,8 +52,8 @@ const Popular = () => {
   return (
     <div className='font-secondary text-white mx-auto w-full flex flex-col justify-center p-4 md:p-8 lg:p-16'>
         <div className='flex'>
-            <input type="text" placeholder="Search for an anime" className='bg-accent-1 text-white p-1 px-4 rounded-l-lg w-full md:w-3/4 lg:w-1/2' />
-            <Link className='bg-accent-2  p-2 rounded-r-2xl  inline-block' to='/search'><IoMdSearch className='text-3xl'/></Link>
+            <input type="text" placeholder="Search for an anime" onChange={(e)=>setSearch(e.target.value)} className='bg-accent-1 text-white p-1 px-4 rounded-l-lg w-full md:w-3/4 lg:w-1/2' />
+            <Link className='bg-accent-2  p-2 rounded-r-2xl  inline-block' to={`/search/${search}`}><IoMdSearch className='text-3xl'/></Link>
 
         </div>
         <h1 className='text-2xl font-semibold my-8'>

@@ -25,7 +25,7 @@
                 setLoading(false);
                 cookies.set("token", data.token, { expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) });
                 localStorage.setItem("user", JSON.stringify(data.user));
-                nav('/search')
+                nav('/popular')
             } else {
                 setError(data.message);
                 setLoading(false);
