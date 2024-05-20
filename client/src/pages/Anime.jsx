@@ -26,7 +26,7 @@ const Anime = () => {
   const { id } = useParams();
   const { animeData, isLoading, isError, error } = useGetAnimeById(id);
   const { playlists, getPlaylists, playlistError, playlistIsLoading } = useGetPlaylists();
- const { nav } = useNavigate();
+ const nav = useNavigate();
   const [playlistId, setPlaylistId] = useState(null);
   const [anime, setAnime] = useState(null);
   const [playlistlist, setPlaylistlist] = useState([]);
@@ -70,7 +70,7 @@ const Anime = () => {
     const selectedPlaylistId = e.target.value;
     if(selectedPlaylistId === 'create') {
       console.log('Create a playlist');
-      nav('/playlists');
+      nav('/playlists')
       return;
     }
     if (!selectedPlaylistId) return;

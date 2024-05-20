@@ -81,6 +81,9 @@ const PlaylistList = () => {
       <div className='py-8'>
         <button className='bg-accent-2 p-2 rounded' onClick={() => setModalIsOpen(true)}>Create Playlist</button> 
       </div>
+      {
+          playlists && playlists.length===0 && !playlistIsLoading && <div className='text-white text-center'>You have not created any playlists :/</div>
+        }
       <div className='card-container w-full h-full py-16 grid grid-cols-1 gap-8 lg:grid-cols-2'>
         {
           playlistError && <div className='text-white text-center'>Error: {playlistError}</div>
@@ -91,9 +94,7 @@ const PlaylistList = () => {
             <CircularProgress />
           </div>
         }
-        {
-          playlists && playlists.length===0 && !playlistIsLoading && <div className='text-white text-center w-screen flex justify-center items-center'>You have not created any playlists :/</div>
-        }
+       
         
         {playlists &&
           playlists.map((item, index) => (
