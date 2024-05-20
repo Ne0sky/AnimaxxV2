@@ -5,7 +5,10 @@ An anime tracking and sharing website.
 
 Check out our demo video to see AnimaxxV2 in action:
 
-[![Demo Video](./demo_video_thumbnail.png)](./demo.mp4)
+
+https://github.com/Ne0sky/AnimaxxV2/assets/99585944/1c3f4c3c-7a82-4c09-9c7b-3fc2d01fcbb9
+
+
 
 Simply click the image above or [click here](./demo_video.mp4) to watch the demo video.
 
