@@ -69,9 +69,9 @@ const PlayList = () => {
                             {data.animes &&
                                 data.animes.map((anime, index) => (
                                     <div
-                                        className={`p-4 flex w-full  bg-gradient-to-r  from-black to-zinc-950 items-center justify-between gap-4 rounded-lg  ${anime.userActions.currentlyWatching
-                                                ? ' border-l-2  border-green-600'
-                                                : ' border-l-2 border-yellow-600'
+                                        className={`p-4 flex w-full  bg-gradient-to-r  from-black to-zinc-950 items-center justify-between gap-4 rounded-lg  
+                                               border-l-2  border-green-600
+                                                
                                             }`}
                                         key={index}
                                     >
@@ -79,7 +79,6 @@ const PlayList = () => {
                                         <img className="w-20 h-20 object-cover rounded-md" src={anime.coverImage} alt={anime.title} />
                                         <div>
 
-                                            <p>{anime.userActions.currentlyWatching}</p>
                                             <h1>{anime.title}</h1>
                                             <p>{anime.type}</p>
                                             </div>
