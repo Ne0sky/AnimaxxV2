@@ -121,7 +121,7 @@ const PlaylistList = () => {
                    <span className='hidden md:flex '>Edit</span><MdOutlineEditNote className='text-xl'/>
                 </button>
                 <button onClick={handleDeletePlaylist(item._id)} className='bg-red-800 bg-opacity-50 p-1  flex items-center gap-2 justify-center rounded-xl text-center md:w-28 border border-rose-500' disabled={isDeleteLoading}>
-                  <span className='hidden md:flex' >Delete</span> 
+                  <span className='hidden md:flex' >Delete</span> <MdDeleteForever className='text-xl'/>
                   
                 </button>
 

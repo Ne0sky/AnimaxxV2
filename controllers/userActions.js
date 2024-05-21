@@ -239,16 +239,13 @@ export const getAnimes = async (req, res) => {
             description: anime.description,
             status: anime.status,
             season: anime.season,
-            userActions: anime.UserActions,
-            seasonYear: anime.seasonYear,
-            startDate: anime.startDate,
-            endDate: anime.endDate,
+           
           };
         });
         const data = {
           playlistId: playlist._id,
           title: playlist.title,
-          madeBy: user.displayName,
+          madeBy: user.displayName || user.username,
           description: playlist.description,
           image: playlist.image,
           animes: publicViewOfAnime,

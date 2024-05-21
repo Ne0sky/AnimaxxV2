@@ -9,7 +9,7 @@ const [playlists, setPlaylists] = useState(null);
 const getPlaylists = async () => {
     const cookies = new Cookies();
     const token = cookies.get('token');
-
+    console.log('fetching playlists')
     try{
         const response = await axios.get('/user/playlist', {
             headers: {

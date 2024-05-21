@@ -8,6 +8,7 @@ const PlayList = () => {
     const { id } = useParams();
     const [data, setData] = useState({});
     const { deleteAnimeFromPlayList } = useDeleteAnimeFromPlayList();
+   
 
     const getAnimes = async () => {
         try {
@@ -49,22 +50,21 @@ const PlayList = () => {
             {data && (
                 <div className="text-white font-secondary">
                     <div className="w-full h-[40vh] rounded-xl">
-                        <div className="bg-gradient-to-b from-green-900  bg-opacity-0 flex items-center p-16 gap-8 w-full h-full">
-                            <img className="w-40 h-40 object-cover rounded-xl" src={data.image} alt={data.title} />
+                        <div className="bg-gradient-to-b from-green-900  bg-opacity-0 flex flex-row items-center p-4 md:p-16 gap-8 w-full h-full">
+                            <img className="w-20 h-20 md:w-40 md:h-40 object-cover rounded-xl" src={data.image} alt={data.title} />
                             <div className="flex flex-col gap-2">
                                 <p>PLAYLIST</p>
-                                <h1 className="text-5xl font-bold">{data.title}</h1>
+                                <h1 className="text-3xl md:text-5xl font-bold">{data.title}</h1>
                                 <h1>{data.description}</h1>
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-2">
                                     <p>{data.madeBy}</p>
-                                    <p>|</p>
-                                    <p>{data.animes && data.animes.length} animes</p>
+                                    <p className='bg-black p-1 rounded'>{data.animes && data.animes.length} animes</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-gradient-to-b  w-[80%] mx-auto to-transparent min-h-[vh-60]">
+                    <div className="bg-gradient-to-b  w-[90%] mx-auto to-transparent min-h-[vh-60]">
                         <div className="p-4 flex flex-col  gap-8 justify-center py-16">
                             {data.animes &&
                                 data.animes.map((anime, index) => (

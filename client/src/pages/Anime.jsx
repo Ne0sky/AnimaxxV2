@@ -14,6 +14,7 @@ import { AiFillLike } from 'react-icons/ai';
 import { LuBadgePercent } from 'react-icons/lu';
 import useAddToWatchList from '../hooks/useAddtoWatchList';
 import useGetPlaylists from '../hooks/useGetPlaylists';
+import { useUserContext } from '../hooks/useUserContext';
 import Cookies from 'universal-cookie';
 import axios from 'axios';
 // Import Swiper styles
@@ -24,6 +25,8 @@ import 'swiper/css/effect-fade';
 
 const Anime = () => {
   const { id } = useParams();
+  const { state } = useUserContext();
+  const { user } = state;
   const { animeData, isLoading, isError, error } = useGetAnimeById(id);
   const { playlists, getPlaylists, playlistError, playlistIsLoading } = useGetPlaylists();
  const nav = useNavigate();
@@ -69,8 +72,11 @@ const Anime = () => {
     e.preventDefault();
     const selectedPlaylistId = e.target.value;
     if(selectedPlaylistId === 'create') {
-      console.log('Create a playlist');
-      nav('/playlists')
+      
+      
+      console.log('Create a playlisttttttt');
+      
+      nav('/playlists');
       return;
     }
     if (!selectedPlaylistId) return;
@@ -114,10 +120,17 @@ const Anime = () => {
   return (
     <div className='font-secondary overflow-x-hidden'>
       <div className='w-full h-[850px] lg:h-screen'>
+        {
+          animeData &&
+          !isLoading &&
+          
+
+
+        
         <div className='relative w-full h-full'>
           <img
             src={
-              animeData.bannerImage
+              animeData && animeData.bannerImage
                 ? animeData.bannerImage
                 : 'https://cdn.pixabay.com/photo/2022/12/01/04/43/girl-7628308_1280.jpg'
             }
@@ -180,6 +193,7 @@ const Anime = () => {
           </div>
 
         </div>
+        }
       </div>
       {/* Anime details */}
       <div className='w-full p-8 flex flex-col md:flex-row gap-8'>
