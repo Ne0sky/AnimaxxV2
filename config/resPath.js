@@ -1,7 +1,7 @@
 import path from 'path';
-import url from 'url';
+import { fileURLToPath } from 'url';
 
 export function currDir(fileUrl) {
-    const __filename = url.fileURLToPath(fileUrl);
+    const __filename = fileURLToPath(fileUrl);
     return path.dirname(__filename);
 }
