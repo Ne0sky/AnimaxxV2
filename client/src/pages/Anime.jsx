@@ -122,7 +122,7 @@ const Anime = () => {
       <div className='w-full h-[850px] lg:h-screen'>
         {
           animeData &&
-          !isLoading &&
+       
           
 
 
