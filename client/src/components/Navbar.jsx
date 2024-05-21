@@ -25,7 +25,7 @@ const Navbar = () => {
     useEffect(() => {
         const getUser = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/login/success', { withCredentials: true });
+                const response = await axios.get('https://animaxx.vercel.app/login/success', { withCredentials: true });
                 console.log('User data:', response.data);
                 cookies.set('token', response.data.token, { expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) });
                 localStorage.setItem('user', JSON.stringify(response.data.user));

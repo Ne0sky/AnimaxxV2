@@ -14,7 +14,7 @@ const PlayList = () => {
             const cookies = new Cookies();
             const token = cookies.get('token');
             const response = await axios.post(
-                'http://localhost:3000/user/get-animes',
+                'https://animaxx.vercel.app/user/get-animes',
                 { url: id },
                 {
                     headers: {

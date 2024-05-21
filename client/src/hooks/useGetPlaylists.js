@@ -11,7 +11,7 @@ const getPlaylists = async () => {
     const token = cookies.get('token');
 
     try{
-        const response = await axios.get('http://localhost:3000/user/playlist', {
+        const response = await axios.get('/user/playlist', {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `${token}`

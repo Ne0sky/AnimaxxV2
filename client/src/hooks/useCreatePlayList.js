@@ -21,7 +21,7 @@ const useCreatePlayList = () => {
       const cookies = new Cookies();
       const token = cookies.get('token');
 
-      const response = await axios.post('http://localhost:3000/user/create-playlist', formData, {
+      const response = await axios.post('/user/create-playlist', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `${token}`,

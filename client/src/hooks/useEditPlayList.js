@@ -27,7 +27,7 @@ const useEditPlayList = () => {
       console.log('title:', formData.get('title'))
 
       const response = await axios.post(
-        `http://localhost:3000/user/playlist/edit/${id}`,
+        `/user/playlist/edit/${id}`,
         formData,
         {
           headers: {

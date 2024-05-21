@@ -19,7 +19,7 @@ const Signup = () => {
     try {
       setError('');
       setLoading(true);
-      res = await axios.post('http://localhost:3000/auth/register', {
+      res = await axios.post('/auth/register', {
         email,
         password,
         displayName,

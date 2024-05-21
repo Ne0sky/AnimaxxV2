@@ -16,7 +16,7 @@ const useAddToWatchList = () => {
             const cookies = new Cookies();
             const token = cookies.get('token');
 
-            const response = await axios.post('http://localhost:3000/user/add-to-playlist', data, {
+            const response = await axios.post('/user/add-to-playlist', data, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `${token}`

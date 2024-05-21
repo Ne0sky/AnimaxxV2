@@ -64,7 +64,7 @@ app.get("/logout", (req, res) => {
     if (err) {
       return next(err);
     }
-    res.redirect("http://localhost:5173");
+    res.redirect("https://animaxx.vercel.app/");
   });
 });
 

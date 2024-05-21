@@ -8,7 +8,7 @@ export const useLogout = () => {
         cookies.remove('token');
         localStorage.removeItem('user');
         dispatch({ type: 'LOGOUT' });
-        window.open('http://localhost:3000/logout', '_self');
+        window.open('https://animaxx.vercel.app/logout', '_self');
     }
 
     return { logout };

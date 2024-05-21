@@ -16,7 +16,7 @@ const Login = () => {
 
     const loginWithGoogle = () => {
         // Implement Google login here
-        window.open('http://localhost:3000/auth/google/callback', '_self')
+        window.open('https://animaxx.vercel.app/auth/google/callback', '_self')
         
 
     }

@@ -13,7 +13,7 @@ const useLikePlayList = () => {
     const token = cookies.get("token");
     try {
       console.log("sending to", playlistId);
-      const response = await axios.post(`http://localhost:3000/user/playlist/likeunlike/${playlistId}`,{}, {
+      const response = await axios.post(`/user/playlist/likeunlike/${playlistId}`,{}, {
             headers: {
                 'Authorization': `${token}`
             }

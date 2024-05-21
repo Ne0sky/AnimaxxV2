@@ -15,7 +15,7 @@ const useDeletePlaylist = () => {
       const cookies = new Cookies();
       const token = cookies.get('token');
 
-      const response = await axios.post('http://localhost:3000/user/delete-playlist', { id }, {
+      const response = await axios.post('/user/delete-playlist', { id }, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `${token}`,

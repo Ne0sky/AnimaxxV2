@@ -15,7 +15,7 @@ const useDeleteAnimeFromPlayList = () => {
             const token = cookies.get("token");
 
             const response = await axios.post(
-                `http://localhost:3000/user/remove-from-playlist/${playlistId}/${animeId}`, {},
+                `/user/remove-from-playlist/${playlistId}/${animeId}`, {},
                 {
                     headers: {
                         'Authorization': `${token}`,

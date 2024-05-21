@@ -18,7 +18,7 @@
                 password,
             };
 
-            const response = await axios.post("http://localhost:3000/auth/login", user);
+            const response = await axios.post("/auth/login", user);
             const data = await response.data;
             if (response.status === 200) {
                 dispatch({ type: "LOGIN", payload: data });
